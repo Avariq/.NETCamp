@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BusinessLogicLayer
+namespace AnimeLib.Services
 {
     public class Class1
     {

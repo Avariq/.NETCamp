@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DataAccessLayer
+namespace AnimeLib.Domain
 {
     public class Class1
     {
