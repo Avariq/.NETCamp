@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31702.278
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccessLayer", "DataAccessLayer\DataAccessLayer.csproj", "{6726567D-B8D6-4F06-9B80-178F31EFDDCA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AnimeLib.Domain", "DataAccessLayer\AnimeLib.Domain.csproj", "{6726567D-B8D6-4F06-9B80-178F31EFDDCA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessLogicLayer", "BusinessLogicLayer\BusinessLogicLayer.csproj", "{E421FF6A-B41E-4EAD-BC13-81FD8EE12B58}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AnimeLib.Services", "BusinessLogicLayer\AnimeLib.Services.csproj", "{E421FF6A-B41E-4EAD-BC13-81FD8EE12B58}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API", "API\API.csproj", "{7FE3502C-DD15-4CA7-8B25-8E8A2A4F5304}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AnimeLib.API", "API\AnimeLib.API.csproj", "{7FE3502C-DD15-4CA7-8B25-8E8A2A4F5304}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
