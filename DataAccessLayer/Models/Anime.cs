@@ -30,11 +30,11 @@ namespace AnimeLib.Domain.Models
         public Status Status { get; set; }
         [Required]
         public int AgeRestrictionId { get; set; }
-        public AgeRestriction AgeRestriction { get; set; }
-        public List<Arc> Arcs { get; set; } = new List<Arc>();
-        public List<AnimeGenres> AnimeGenres { get; set; } = new List<AnimeGenres>();
+        public AgeRestriction AgeRestriction { get; set; } // virtual
+        public List<Arc> Arcs { get; set; } //virtual ICollection<Arc>
+        public List<AnimeGenres> AnimeGenres { get; set; }
 
 
-        //prop for img
+        //prop for img (block storage / static)
     }
 }
