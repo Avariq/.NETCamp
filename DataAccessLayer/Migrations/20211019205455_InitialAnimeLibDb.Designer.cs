@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AnimeLib.Domain.Migrations
 {
     [DbContext(typeof(AnimeContext))]
-    [Migration("20211019144917_AnimeLibDBInitial")]
-    partial class AnimeLibDBInitial
+    [Migration("20211019205455_InitialAnimeLibDb")]
+    partial class InitialAnimeLibDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,6 +20,21 @@ namespace AnimeLib.Domain.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.11")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("AnimeGenre", b =>
+                {
+                    b.Property<int>("AnimeGenresId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AnimesId")
+                        .HasColumnType("int");
+
+                    b.HasKey("AnimeGenresId", "AnimesId");
+
+                    b.HasIndex("AnimesId");
+
+                    b.ToTable("AnimeGenre");
+                });
 
             modelBuilder.Entity("AnimeLib.Domain.Models.AgeRestriction", b =>
                 {
@@ -48,7 +63,7 @@ namespace AnimeLib.Domain.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("AgeRestrictionId")
+                    b.Property<int?>("AgeRestrictionId")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
@@ -62,7 +77,7 @@ namespace AnimeLib.Domain.Migrations
                     b.Property<int>("Rating")
                         .HasColumnType("int");
 
-                    b.Property<int>("StatusId")
+                    b.Property<int?>("StatusId")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
@@ -83,21 +98,6 @@ namespace AnimeLib.Domain.Migrations
                     b.HasIndex("StatusId");
 
                     b.ToTable("Animes");
-                });
-
-            modelBuilder.Entity("AnimeLib.Domain.Models.AnimeGenres", b =>
-                {
-                    b.Property<int>("AnimeId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("GenreId")
-                        .HasColumnType("int");
-
-                    b.HasKey("AnimeId", "GenreId");
-
-                    b.HasIndex("GenreId");
-
-                    b.ToTable("AnimeGenres");
                 });
 
             modelBuilder.Entity("AnimeLib.Domain.Models.Arc", b =>
@@ -181,42 +181,34 @@ namespace AnimeLib.Domain.Migrations
                     b.ToTable("Statuses");
                 });
 
+            modelBuilder.Entity("AnimeGenre", b =>
+                {
+                    b.HasOne("AnimeLib.Domain.Models.Genre", null)
+                        .WithMany()
+                        .HasForeignKey("AnimeGenresId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("AnimeLib.Domain.Models.Anime", null)
+                        .WithMany()
+                        .HasForeignKey("AnimesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("AnimeLib.Domain.Models.Anime", b =>
                 {
                     b.HasOne("AnimeLib.Domain.Models.AgeRestriction", "AgeRestriction")
                         .WithMany()
-                        .HasForeignKey("AgeRestrictionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AgeRestrictionId");
 
                     b.HasOne("AnimeLib.Domain.Models.Status", "Status")
                         .WithMany()
-                        .HasForeignKey("StatusId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("StatusId");
 
                     b.Navigation("AgeRestriction");
 
                     b.Navigation("Status");
-                });
-
-            modelBuilder.Entity("AnimeLib.Domain.Models.AnimeGenres", b =>
-                {
-                    b.HasOne("AnimeLib.Domain.Models.Anime", "Anime")
-                        .WithMany("AnimeGenres")
-                        .HasForeignKey("AnimeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("AnimeLib.Domain.Models.Genre", "Genre")
-                        .WithMany("AnimeGenres")
-                        .HasForeignKey("GenreId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Anime");
-
-                    b.Navigation("Genre");
                 });
 
             modelBuilder.Entity("AnimeLib.Domain.Models.Arc", b =>
@@ -235,19 +227,12 @@ namespace AnimeLib.Domain.Migrations
 
             modelBuilder.Entity("AnimeLib.Domain.Models.Anime", b =>
                 {
-                    b.Navigation("AnimeGenres");
-
                     b.Navigation("Arcs");
                 });
 
             modelBuilder.Entity("AnimeLib.Domain.Models.Arc", b =>
                 {
                     b.Navigation("Episodes");
-                });
-
-            modelBuilder.Entity("AnimeLib.Domain.Models.Genre", b =>
-                {
-                    b.Navigation("AnimeGenres");
                 });
 #pragma warning restore 612, 618
         }

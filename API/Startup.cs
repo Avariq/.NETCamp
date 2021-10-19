@@ -1,4 +1,5 @@
 using AnimeLib.Domain.DataAccess;
+using AnimeLib.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -31,6 +32,7 @@ namespace AnimeLib.API
             {
                 options.UseSqlServer(Configuration.GetConnectionString("Default"));
             });
+            services.AddScoped<AnimeService>();
             services.AddControllers();
         }
 

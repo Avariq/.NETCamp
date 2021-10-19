@@ -2,7 +2,7 @@
 
 namespace AnimeLib.Domain.Migrations
 {
-    public partial class AnimeLibDBInitial : Migration
+    public partial class InitialAnimeLibDb : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -58,8 +58,8 @@ namespace AnimeLib.Domain.Migrations
                     Episodes = table.Column<int>(type: "int", nullable: false),
                     Views = table.Column<int>(type: "int", nullable: false),
                     Description = table.Column<string>(type: "varchar(500)", maxLength: 500, nullable: false),
-                    StatusId = table.Column<int>(type: "int", nullable: false),
-                    AgeRestrictionId = table.Column<int>(type: "int", nullable: false)
+                    StatusId = table.Column<int>(type: "int", nullable: true),
+                    AgeRestrictionId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -69,34 +69,34 @@ namespace AnimeLib.Domain.Migrations
                         column: x => x.AgeRestrictionId,
                         principalTable: "AgeRestrictions",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Animes_Statuses_StatusId",
                         column: x => x.StatusId,
                         principalTable: "Statuses",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "AnimeGenres",
+                name: "AnimeGenre",
                 columns: table => new
                 {
-                    AnimeId = table.Column<int>(type: "int", nullable: false),
-                    GenreId = table.Column<int>(type: "int", nullable: false)
+                    AnimeGenresId = table.Column<int>(type: "int", nullable: false),
+                    AnimesId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AnimeGenres", x => new { x.AnimeId, x.GenreId });
+                    table.PrimaryKey("PK_AnimeGenre", x => new { x.AnimeGenresId, x.AnimesId });
                     table.ForeignKey(
-                        name: "FK_AnimeGenres_Animes_AnimeId",
-                        column: x => x.AnimeId,
+                        name: "FK_AnimeGenre_Animes_AnimesId",
+                        column: x => x.AnimesId,
                         principalTable: "Animes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_AnimeGenres_Genres_GenreId",
-                        column: x => x.GenreId,
+                        name: "FK_AnimeGenre_Genres_AnimeGenresId",
+                        column: x => x.AnimeGenresId,
                         principalTable: "Genres",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -144,9 +144,9 @@ namespace AnimeLib.Domain.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_AnimeGenres_GenreId",
-                table: "AnimeGenres",
-                column: "GenreId");
+                name: "IX_AnimeGenre_AnimesId",
+                table: "AnimeGenre",
+                column: "AnimesId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Animes_AgeRestrictionId",
@@ -172,7 +172,7 @@ namespace AnimeLib.Domain.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "AnimeGenres");
+                name: "AnimeGenre");
 
             migrationBuilder.DropTable(
                 name: "Episodes");
