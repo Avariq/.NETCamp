@@ -43,12 +43,5 @@ namespace AnimeLib.API.Controllers
             return Ok(animes);
         }
 
-        // GET api/<MainController>/5
-        [HttpGet("GetById/{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
     }
 }
