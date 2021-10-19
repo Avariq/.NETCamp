@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AnimeLib.Domain.Migrations
 {
     [DbContext(typeof(AnimeContext))]
-    [Migration("20211017225519_InitialAnimeLibDBCreation")]
-    partial class InitialAnimeLibDBCreation
+    [Migration("20211019144917_AnimeLibDBInitial")]
+    partial class AnimeLibDBInitial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

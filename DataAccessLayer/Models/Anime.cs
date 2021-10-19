@@ -27,12 +27,12 @@ namespace AnimeLib.Domain.Models
         public string Description { get; set; }
         [Required]
         public int StatusId { get; set; }
-        public Status Status { get; set; }
+        public virtual Status Status { get; set; }
         [Required]
         public int AgeRestrictionId { get; set; }
-        public AgeRestriction AgeRestriction { get; set; } // virtual
-        public List<Arc> Arcs { get; set; } //virtual ICollection<Arc>
-        public List<AnimeGenres> AnimeGenres { get; set; }
+        public virtual AgeRestriction AgeRestriction { get; set; }
+        public virtual ICollection<Arc> Arcs { get; set; }
+        public virtual ICollection<AnimeGenres> AnimeGenres { get; set; }
 
 
         //prop for img (block storage / static)

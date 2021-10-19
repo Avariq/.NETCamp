@@ -2,7 +2,7 @@
 
 namespace AnimeLib.Domain.Migrations
 {
-    public partial class InitialAnimeLibDBCreation : Migration
+    public partial class AnimeLibDBInitial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

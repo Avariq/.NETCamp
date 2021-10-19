@@ -9,9 +9,9 @@ namespace AnimeLib.Domain.Models
     {
         [Required]
         public int AnimeId { get; set; }
-        public Anime Anime { get; set; }
+        public virtual Anime Anime { get; set; }
         [Required]
         public int GenreId { get; set; }
-        public Genre Genre { get; set; }
+        public virtual Genre Genre { get; set; }
     }
 }
