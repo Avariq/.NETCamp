@@ -21,6 +21,10 @@ namespace AnimeLib.Services
         public List<Anime> GetAllAnimes()
         {
             var animes = context.Animes
+                .Include(s => s.Status)
+                .Include(restr => restr.AgeRestriction)
+                .Include(arcs => arcs.Arcs)
+                .Include(g => g.AnimeGenres)
                 .ToList();
             return animes;
         }
@@ -28,9 +32,13 @@ namespace AnimeLib.Services
         public List<Anime> GetAnimesByTitle(string title_fragment)
         {
             var animes = context.Animes
+                .Include(s => s.Status)
+                .Include(restr => restr.AgeRestriction)
+                .Include(g => g.AnimeGenres)
+                .Include(arc => arc.Arcs)
+                .ThenInclude(ep => ep.Episodes)
                 .Where(a => a.Title.Contains(title_fragment))
                 .ToList();
-            
             return animes;
         }
     }
