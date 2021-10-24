@@ -28,15 +28,15 @@ namespace AnimeLib.API.Controllers
         [HttpGet("GetAll")]
         public IActionResult Get()
         {
-            List<Anime> animes = animeService.GetAllAnimes();
+            Anime[] animes = animeService.GetAllAnimes();
             return Ok(animes);
         }
 
         [HttpGet("GetByTitle/{titlefragment}")]
         public IActionResult GetByTitle(string titlefragment)
         {
-            List<Anime> animes = animeService.GetAnimesByTitle(titlefragment);
-            if (animes.Count < 1)
+            Anime[] animes = animeService.GetAnimesByTitle(titlefragment);
+            if (animes.Length < 1)
             {
                 return NoContent();
             }
