@@ -1,0 +1,87 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" charset="utf-8" />
+    <title>AnimeLib</title>
+    <link href="CSS/main.css" rel="stylesheet" />
+    <script src="JS/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <ul class="menu">
+                <li><a href="#"> Main page </a></li>
+                <li><a href="#">Catalogue</a></li>
+                <li><a href="#">TOP-100</a></li>
+                <li><a href="#">Random Anime</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <div class="content">
+        <div class="tabs-block">
+            <div class="tabs-header">
+                <ul class="tabs">
+                    <li>Recently Added</li>
+                </ul>
+            </div>
+
+            <div class="tabs-content">
+                <div id="new" class="tab-content">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            Manager.GetAllAnimes();
+        })
+
+        var Manager = {
+            GetAllAnimes: function () {
+                var obj = "";
+                var sourceUrl = "https://localhost:5001/Main/GetAll";
+                window.Manager.GetAPI(sourceUrl, onSuccess, onFail);
+                function onSuccess(jsonData) {
+                    obj = jsonData;
+                    data = Object.entries(jsonData);
+
+                    for (var i = 0; i < data.length; i++) {
+                        var html = '';
+                        html += '<div class="preview-block">';
+                        html += '<a href="#">';
+                        html += '<img class="preview-img" src="' + data[i][1].image + '" alt=""/></a>';
+                        html += '<div class="preview-info-block">';
+                        html += '<a href="#" class="preview-title">' + data[i][1].title + '</a>'
+                        html += '<ul class="content-main-info"><li>';
+                        html += data[i][1].year + ' | ';
+                        html += data[i][1].status.statusName;
+                        html += ' | Episodes: ' + data[i][1].episodes;
+                        html += '</li></ul></div></div>';
+                        $("#new").append(html);
+                    }
+                }
+                function onFail(error) {
+                    window.alert(error.statusText);
+                }
+                return obj;
+            },
+
+            GetAPI: function (sourceUrl, successCallback, failCallback) {
+                $.ajax({
+                    type: "GET",
+                    url: sourceUrl,
+                    dataType: "json",
+                    success: successCallback,
+                    error: function (errorThrown) {
+                        alert(errorThrown);
+                    }
+                });
+            }
+        }
+
+    </script>
+
+</body>
+</html>

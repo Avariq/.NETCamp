@@ -1,0 +1,131 @@
+﻿*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-image: url("/Images/background.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.header {
+    background-color: #222;
+    border-top: 3px solid;
+    border-top-color: #3a3a3a;
+    border-bottom: 3px solid;
+    border-bottom-color: #3a3a3a;
+}
+
+header::after {
+    content: '';
+    display: table;
+    clear: both;
+}
+
+.container {
+    width: 100%;
+    max-width: 1300px;
+    margin: 0 auto;
+}
+
+.menu {
+    float: right;
+    list-style: none;
+}
+
+.menu>li {
+    display: inline-block;
+    float: left;
+    font-size: 20px;
+    position: relative;
+    padding: 12px 15px;
+}
+
+.menu a {
+    text-decoration: none;
+    color: white;
+    text-transform: uppercase;
+}
+
+.menu li:hover {
+    background-color: #3a3a3a;
+    transition-duration: 0.3s;
+    cursor: pointer;
+}
+
+.content {
+    display: flex;
+    width: 100%;
+    position: relative;
+}
+.content>div {
+    flex-grow: 1;
+    min-width: 0;
+}
+.tabs-header {
+    height: 48px;
+    width: 100%;
+    margin-top: 400px;
+    background-color: #222;
+}
+.tabs {
+    clear: both;
+    background-color: #3a3a3a;
+    color: white;
+    border-top: 3px solid;
+    border-top-color: #3a3a3a;
+    border-bottom: 3px solid;
+    border-bottom-color: #3a3a3a;
+    padding: 12px 10px;
+    text-transform: uppercase;
+    width: 200px;
+    text-align: center;
+}
+.tab-content {
+    max-width: 80%;
+}
+.temp {
+    color: white;
+    font-size: 20px;
+    text-align: center;
+    background-color: #222;
+    margin: 15px 0px;
+    width: 200px;
+}
+.preview-block {
+    background-color: #222;
+    float: left;
+    margin-bottom: 20px;
+    max-height: 240px;
+    position: relative;
+    width: 600px;
+}
+.preview-img {
+    float: left;
+    width: 170px;
+    height: 240px;
+    position: relative;
+}
+.preview-info-block {
+    padding: 10px 10px 0;
+    max-height: 240px;
+    overflow: auto;
+}
+.content-main-info {
+    line-height: 26px;
+    color: white;
+    margin-top: 5px;
+}
+.preview-title {
+    color: white;
+    text-decoration: none;
+    font-size: 30px;
+}
+.preview-title:hover {
+    color: #3a3a3a;
+    transition-duration: 0.3s;
+    cursor: pointer;
+}
+

@@ -22,6 +22,10 @@ namespace AnimeLib.Domain.Models
         [Required]
         public int Views { get; set; }
         [Required]
+        [MaxLength(100)]
+        [Column(TypeName = "varchar(100)")]
+        public string Image { get; set; }
+        [Required]
         [MaxLength(500)]
         [Column(TypeName = "varchar(500)")]
         public string Description { get; set; }

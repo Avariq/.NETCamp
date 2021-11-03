@@ -22,9 +22,9 @@ namespace AnimeLib.Services
         {
             var animes = context.Animes
                 .Include(s => s.Status)
-                .Include(restr => restr.AgeRestriction)
-                .Include(arcs => arcs.Arcs)
-                .Include(g => g.AnimeGenres)
+                .Include(rs => rs.AgeRestriction)
+                .Include(a => a.AnimeGenres)
+                .Include(arc => arc.Arcs)
                 .ToArray();
             return animes;
         }
