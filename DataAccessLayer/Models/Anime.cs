@@ -14,7 +14,7 @@ namespace AnimeLib.Domain.Models
         [MaxLength(100)]
         public string Title { get; set; }
         [Required]
-        public int Rating { get; set; }
+        public float Rating { get; set; }
         [Required]
         public int Year { get; set; }
         [Required]

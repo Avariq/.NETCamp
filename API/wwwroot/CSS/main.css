@@ -80,19 +80,11 @@ header::after {
     border-bottom-color: #3a3a3a;
     padding: 12px 10px;
     text-transform: uppercase;
-    width: 200px;
+    width: 170px;
     text-align: center;
 }
 .tab-content {
     max-width: 80%;
-}
-.temp {
-    color: white;
-    font-size: 20px;
-    text-align: center;
-    background-color: #222;
-    margin: 15px 0px;
-    width: 200px;
 }
 .preview-block {
     background-color: #222;
@@ -101,6 +93,7 @@ header::after {
     max-height: 240px;
     position: relative;
     width: 600px;
+    margin-right: 2%;
 }
 .preview-img {
     float: left;
@@ -124,7 +117,7 @@ header::after {
     font-size: 30px;
 }
 .preview-title:hover {
-    color: #3a3a3a;
+    color: #808080;
     transition-duration: 0.3s;
     cursor: pointer;
 }
