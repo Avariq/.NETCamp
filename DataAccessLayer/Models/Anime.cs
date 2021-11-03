@@ -17,7 +17,6 @@ namespace AnimeLib.Domain.Models
         public float Rating { get; set; }
         [Required]
         public int Year { get; set; }
-        [Required]
         public int Episodes { get; set; }
         [Required]
         public int Views { get; set; }
@@ -25,6 +24,8 @@ namespace AnimeLib.Domain.Models
         [MaxLength(100)]
         [Column(TypeName = "varchar(100)")]
         public string Image { get; set; }
+        [Required]
+        public int Votes { get; set; } = 0;
         [Required]
         [MaxLength(500)]
         [Column(TypeName = "varchar(500)")]
@@ -34,7 +35,5 @@ namespace AnimeLib.Domain.Models
         public virtual ICollection<Arc> Arcs { get; set; }
         public virtual ICollection<Genre> AnimeGenres { get; set; }
 
-
-        //prop for img (block storage / static)
     }
 }

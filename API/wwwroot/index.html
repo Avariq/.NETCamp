@@ -4,6 +4,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" charset="utf-8" />
     <title>AnimeLib</title>
     <link href="CSS/main.css" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Kurenaido&display=swap" rel="stylesheet">
     <script src="JS/jquery-3.6.0.min.js"></script>
 </head>
 <body>
@@ -48,17 +51,45 @@
                     data = Object.entries(jsonData);
 
                     for (var i = 0; i < data.length; i++) {
+                        var elem = data[i][1];
                         var html = '';
                         html += '<div class="preview-block">';
                         html += '<a href="#">';
-                        html += '<img class="preview-img" src="' + data[i][1].image + '" alt=""/></a>';
+                        html += '<img class="preview-img" src="' + elem.image + '" alt=""/></a>';
                         html += '<div class="preview-info-block">';
-                        html += '<a href="#" class="preview-title">' + data[i][1].title + '</a>'
+                        html += '<a href="#" class="preview-title">' + elem.title + '</a>'
+
+                        html += '<div class"rating-info">';
+                        var rating = elem.rating;
+                        html += '<span class="main-rating">' + rating + '</span>';
+                        html += '<span class="main-rating-info">' + elem.votes + ' total votes</span>';
+                        html += '</div>'
+
                         html += '<ul class="content-main-info"><li>';
-                        html += data[i][1].year + ' | ';
-                        html += data[i][1].status.statusName;
-                        html += ' | Episodes: ' + data[i][1].episodes;
-                        html += '</li></ul></div></div>';
+                        if (elem.year) {
+                            html += elem.year + ' | ';
+                        }
+                        html += elem.status.statusName;
+                        html += ' | Episodes: ';
+                        if (elem.episodes) {
+                            html += elem.episodes;
+                        }
+                        else {
+                            html += '1+';
+                        }
+                        html += '</li>';
+                        
+                        if (elem.animeGenres.length > 0) {
+                            html += '<li class="categories-list">';
+                            html += '<span>Genres:</span>';
+                            html += '<ul>'
+                            elem.animeGenres.forEach(function (cat) {
+                                html += '<li>' + cat.name + '</li>';
+                            })
+                            html += '</ul>';
+                        }
+                        html += '<li class="ageRestr"><span>Age Restriction:</span>' + elem.ageRestriction.restrictionCode + ' (' + elem.ageRestriction.ageRequired + '+)' + '</li>';
+                        html += '</ul></div></div>';
                         $("#new").append(html);
                     }
                 }

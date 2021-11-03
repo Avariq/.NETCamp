@@ -1,7 +1,8 @@
-﻿*{
+﻿* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: 'Zen Kurenaido', sans-serif;
 }
 
 body {
@@ -117,8 +118,52 @@ header::after {
     font-size: 30px;
 }
 .preview-title:hover {
-    color: #808080;
+    color: #e64242;
     transition-duration: 0.3s;
     cursor: pointer;
 }
+.categories-list span {
+    font-weight: 600;
+    float: left;
+}
+.categories-list ul {
+    list-style: none;
+    float: left;
+}
+.categories-list li {
+    float: left;
+    margin-left: 5px;
+    color: #e64242;
+}
+.ageRestr span {
+    font-weight: 600;
+    float: left;
+    margin-right: 5px;
+}
+.rating-info {
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 10px;
+    position: relative;
+    -webkit-box-align: center;
+}
+.main-rating {
+    color: white;
+    background-color: #ffbb00;
+    padding: 0px 5px;
+    border-radius: 3px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 19px;
+}
+.main-rating, .main-rating-info {
+    display: inline-block;
+    vertical-align: middle;
+}
+.main-rating-info {
+    line-height: 1.3;
+    margin-left: 5px;
+    color: white;
+    font-size: 14px;
 
+}
