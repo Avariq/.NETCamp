@@ -1,0 +1,46 @@
+﻿.ap-container {
+    width: 800px;
+    height: 650px;
+    background-color: #222;
+    margin: auto;
+}
+.option-container {
+    background-color: #222;
+    width: 100%;
+}
+.option-container > .ap-option-menu {
+    list-style: none;
+    margin: auto;
+    width: 100%;
+    text-align: center;
+    display: flex;
+    margin-top: 70px;
+    border: 3px solid #333;
+}
+.ap-option-menu > li {
+    color: white;
+    float: left;
+    flex: 1;
+    font-size: 30px;
+}
+.ap-option-menu > li:hover {
+    color: #e64242;
+    transition-duration: 0.3s;
+    cursor: pointer;
+}
+#new-anime-block {
+    /*display: none;*/
+}
+.new-anime-block {
+    height: 100%;
+    width: 100%;
+    background-color: #333;
+}
+#new-arc-block {
+    display: none;
+}
+.new-arc-block {
+    height: 100%;
+    width: 100%;
+    background-color: #333;
+}

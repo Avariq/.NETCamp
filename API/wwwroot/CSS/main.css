@@ -6,9 +6,8 @@
 }
 
 body {
-    background-image: url("/Images/background.jpg");
-    background-repeat: no-repeat;
-    background-size: cover;
+    background-color: #222;
+    width: 100%;
 }
 
 .header {
@@ -61,40 +60,46 @@ header::after {
     width: 100%;
     position: relative;
 }
-.content>div {
+.content > div {
     flex-grow: 1;
     min-width: 0;
 }
 .tabs-header {
     height: 48px;
-    width: 100%;
+    max-width: 80%;
     margin-top: 400px;
-    background-color: #222;
+    background-color: #3a3a3a;
+    border-bottom: solid 3px;
+    border-bottom-color: #e64242;
 }
 .tabs {
     clear: both;
-    background-color: #3a3a3a;
+    background-color: #e64242;
     color: white;
-    border-top: 3px solid;
-    border-top-color: #3a3a3a;
-    border-bottom: 3px solid;
-    border-bottom-color: #3a3a3a;
-    padding: 12px 10px;
     text-transform: uppercase;
     width: 170px;
+    height: 48px;
     text-align: center;
+}
+.tabs li {
+    padding-top: 10px;
 }
 .tab-content {
     max-width: 80%;
+    display: flex;
+    position: relative;
+    flex-grow: 1;
+    flex-wrap: wrap;
+    justify-content: space-between;
+
 }
 .preview-block {
-    background-color: #222;
+    background-color: #3a3a3a;
     float: left;
-    margin-bottom: 20px;
     max-height: 240px;
     position: relative;
     width: 600px;
-    margin-right: 2%;
+    margin-bottom: 20px;
 }
 .preview-img {
     float: left;
