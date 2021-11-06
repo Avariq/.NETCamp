@@ -4,12 +4,10 @@
     box-sizing: border-box;
     font-family: 'Zen Kurenaido', sans-serif;
 }
-
 body {
     background-color: #222;
     width: 100%;
 }
-
 .header {
     background-color: #222;
     border-top: 3px solid;
@@ -17,24 +15,20 @@ body {
     border-bottom: 3px solid;
     border-bottom-color: #3a3a3a;
 }
-
 header::after {
     content: '';
     display: table;
     clear: both;
 }
-
 .container {
     width: 100%;
     max-width: 1300px;
     margin: 0 auto;
 }
-
 .menu {
     float: right;
     list-style: none;
 }
-
 .menu>li {
     display: inline-block;
     float: left;
@@ -42,19 +36,16 @@ header::after {
     position: relative;
     padding: 12px 15px;
 }
-
 .menu a {
     text-decoration: none;
     color: white;
     text-transform: uppercase;
 }
-
 .menu li:hover {
     background-color: #3a3a3a;
     transition-duration: 0.3s;
     cursor: pointer;
 }
-
 .content {
     display: flex;
     width: 100%;
@@ -64,13 +55,22 @@ header::after {
     flex-grow: 1;
     min-width: 0;
 }
+.tabs-block {
+    max-width: 80%;
+}
 .tabs-header {
     height: 48px;
-    max-width: 80%;
+    width: 100%;
+    display: flex;
     margin-top: 400px;
     background-color: #3a3a3a;
     border-bottom: solid 3px;
     border-bottom-color: #e64242;
+}
+@media only screen and (max-width: 1516px) {
+    .tabs-header {
+        width: 600px;
+    }
 }
 .tabs {
     clear: both;
@@ -85,7 +85,7 @@ header::after {
     padding-top: 10px;
 }
 .tab-content {
-    max-width: 80%;
+    width: 100%;
     display: flex;
     position: relative;
     flex-grow: 1;
@@ -170,5 +170,4 @@ header::after {
     margin-left: 5px;
     color: white;
     font-size: 14px;
-
 }
