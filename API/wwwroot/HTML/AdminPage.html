@@ -97,15 +97,38 @@
                     <input id="arc-submit" class="arc-submit" type="submit" value="Submit" />
                 </div>
             </div>
+        </div>
 
+        <div id="new-episode-block">
+            <div class="new-episode-block">
+                <div class="ep-anime-block">
+                    <label>Anime:<input id="ep-anime-title" type="text" /></label>
+                    <label>Arc:<input id="ep-arc-title" type="text" /></label>
+                </div>
+                <div class="ep-episode-block">
+                    <label>Episode name:<input id="ep-title" type="text" /></label>
+                    <label>Episode length (min):<input id="ep-length" type="text" /></label>
+                </div>
+                <div class="submit-block">
+                    <input id="ep-submit" class="ep-submit" type="submit" value="Submit" />
+                </div>
+            </div>
         </div>
     </div>
 
     <script type="text/javascript">
         $(document).ready(function () {
             $("#new-anime").click(function () {
+                $("#new-arc").removeClass("viewing");
+                $("#new-arc-block").hide();
                 $("#new-anime-block").fadeIn();
                 $("#new-anime").addClass("viewing");
+            });
+            $("#new-arc").click(function () {
+                $("#new-anime").removeClass("viewing");
+                $("#new-anime-block").hide();
+                $("#new-arc-block").fadeIn();
+                $("#new-arc").addClass("viewing");
             });
         })
     </script>

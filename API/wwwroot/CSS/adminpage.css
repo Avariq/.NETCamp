@@ -183,6 +183,8 @@
 }
 .anime-submit-block {
     margin: auto;
+    height: 100px;
+    width: 300px;
 }
 .anime-submit {
     height: 50px;
@@ -190,6 +192,8 @@
     background-color: #333;
     color: #e64242;
     font-size: 17px;
+    cursor: pointer;
+    margin: 0;
 }
 .upload-image-block {
     margin: auto;
@@ -199,11 +203,11 @@
 }
 #img-file {
     cursor: pointer;
+    margin: 0;
 }
 .upload-image-block > label {
     color: white;
     font-size: 19px;
-    margin: auto;
     cursor: pointer;
 }
 
@@ -225,9 +229,8 @@
     display: none;
 }
 
-
 #new-arc-block {
-    /*display: none;*/
+    display: none;
 }
 .new-arc-block {
     height: 150px;
@@ -280,6 +283,32 @@
     height: 40px;
     width: 200px;
     color: #e64242;
+    font-size: 17px;
     background-color: #333;
     margin: auto;
+    cursor: pointer;
+}
+
+#new-episode-block {
+    /*display: none;*/
+}
+
+.new-episode-block {
+    width: 100%;
+    height: 200px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.ep-anime-block {
+    height: 100px;
+    background-color: #333;
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+}
+.ep-episode-block {
+    background-color: #333;
+    flex: 1;
+    display: flex;
 }
