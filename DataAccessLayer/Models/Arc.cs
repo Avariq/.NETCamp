@@ -14,6 +14,8 @@ namespace AnimeLib.Domain.Models
         [Column(TypeName = "varchar(100)")]
         public string Name { get; set; }
 
+        [Required]
+        public int AnimeId { get; set; }
         public virtual ICollection<Episode> Episodes { get; set; }
     }
 }

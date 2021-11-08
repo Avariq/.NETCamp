@@ -87,15 +87,17 @@
         
         <div id="new-arc-block">
             <div class="new-arc-block">
-                <div class="arc-anime-title">
-                    <label>Anime:<input id="arc-anime-title" type="text" /></label>
-                </div>
-                <div class="arc-arc-title">
-                    <label>New Arc:<input id="arc-arc-title" type="text" /></label>
-                </div>
-                <div class="arc-submit-block">
-                    <input id="arc-submit" class="arc-submit" type="submit" value="Submit" />
-                </div>
+                <form id="new-arc-form">
+                    <div class="arc-anime-title">
+                        <label>Anime:<input id="arc-anime-title" type="text" /></label>
+                    </div>
+                    <div class="arc-arc-title">
+                        <label>New Arc:<input id="arc-arc-title" type="text" /></label>
+                    </div>
+                    <div class="arc-submit-block">
+                        <input id="arc-submit" class="arc-submit" type="submit" value="Submit" />
+                    </div>
+                </form>
             </div>
         </div>
 
@@ -118,31 +120,95 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-            $("#new-anime").click(function () {
-                $("#new-arc").removeClass("viewing");
-                $("#new-episode").removeClass("viewing");
-                $("#new-arc-block").hide();
-                $("#new-episode-block").hide();
-                $("#new-anime-block").fadeIn();
-                $("#new-anime").addClass("viewing");
+            
+        })
+
+        $("#new-anime").click(function () {
+            $("#new-arc").removeClass("viewing");
+            $("#new-episode").removeClass("viewing");
+            $("#new-arc-block").hide();
+            $("#new-episode-block").hide();
+            $("#new-anime-block").fadeIn();
+            $("#new-anime").addClass("viewing");
+        });
+        $("#new-arc").click(function () {
+            $("#new-anime").removeClass("viewing");
+            $("#new-episode").removeClass("viewing");
+            $("#new-anime-block").hide();
+            $("#new-episode-block").hide();
+            $("#new-arc-block").fadeIn();
+            $("#new-arc").addClass("viewing");
+        });
+        $("#new-episode").click(function () {
+            $("#new-anime").removeClass("viewing");
+            $("#new-anime-block").hide();
+            $("#new-arc-block").hide();
+            $("#new-arc").removeClass("viewing");
+            $("#new-episode-block").fadeIn();
+            $("#new-episode").addClass("viewing");
+        });
+
+        jQuery.extend({
+            getAnimeId: function (animeTitle) {
+                var Id = -1;
+                $.ajax({
+                    type: "get",
+                    url: "https://localhost:5001/Main/GetAnimeIdByTitle" + "/" + animeTitle,
+                    dataType: "json",
+                    async: false,
+                    success: function (data) {
+                        Id = data;
+                    },
+                    error: function (errorThrown) {
+                        console.log(errorThrown);
+                    }
+                });
+                return Id;
+            }
+        });
+
+        $("#new-arc-form").submit(function (event) {
+            event.preventDefault();
+
+            var $form = $(this);
+
+            var $inputs = $form.find("input");
+
+            $inputs.prop("disabled", true);
+
+            var animeTitle = $("#arc-anime-title").val().toString();
+            var Id = $.getAnimeId(animeTitle);
+            console.log("Retrieved id: " + Id);
+
+            var arc_newname = $("#arc-arc-title").val().toString();
+
+            var request = $.ajax({
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                url: "https://localhost:5001/Main/CreateArc",
+                type: "post",
+                dataType: "json",
+                async: false,
+                data: JSON.stringify({"animeId": Id, "name": arc_newname})
             });
-            $("#new-arc").click(function () {
-                $("#new-anime").removeClass("viewing");
-                $("#new-episode").removeClass("viewing");
-                $("#new-anime-block").hide();
-                $("#new-episode-block").hide();
-                $("#new-arc-block").fadeIn();
-                $("#new-arc").addClass("viewing");
+            request.done(function (response, textStatus, jqXHR) {
+                console.log("Frontend: Success 201");
             });
-            $("#new-episode").click(function () {
-                $("#new-anime").removeClass("viewing");
-                $("#new-anime-block").hide();
-                $("#new-arc-block").hide();
-                $("#new-arc").removeClass("viewing");
-                $("#new-episode-block").fadeIn();
-                $("#new-episode").addClass("viewing");
+
+            request.fail(function (jqXHR, textStatus, errorThrown) {
+                console.error(
+                    "The following error occurred: " +
+                    textStatus, errorThrown
+                );
+            });
+
+            request.always(function () {
+                $inputs.prop("disabled", false);
             });
         })
+
     </script>
 </body>
 </html>

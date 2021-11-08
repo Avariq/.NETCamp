@@ -1,6 +1,7 @@
 ﻿using AnimeLib.Domain.DataAccess;
 using AnimeLib.Domain.Models;
 using AnimeLib.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -8,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+/*    async Task<ActionResult> + Exception handling    */
 
 namespace AnimeLib.API.Controllers
 {
@@ -25,14 +26,14 @@ namespace AnimeLib.API.Controllers
             animeService = _animeService;
         }
 
-        [HttpGet("GetAll")]
-        public IActionResult Get()
+        [HttpGet(nameof(GetAll))]
+        public IActionResult GetAll()
         {
             Anime[] animes = animeService.GetAllAnimes();
             return Ok(animes);
         }
 
-        [HttpGet("GetByTitle/{titlefragment}")]
+        [HttpGet(nameof(GetByTitle) + "/{titlefragment}")]
         public IActionResult GetByTitle(string titlefragment)
         {
             Anime[] animes = animeService.GetAnimesByTitle(titlefragment);
@@ -41,6 +42,41 @@ namespace AnimeLib.API.Controllers
                 return NoContent();
             }
             return Ok(animes);
+        }
+
+        [HttpGet(nameof(GetAnimeIdByTitle) + "/{title}")]
+        public IActionResult GetAnimeIdByTitle(string title)
+        {
+            int returnedId = animeService.GetAnimeId(title);
+
+            return Ok(returnedId);
+        }
+
+        [HttpGet(nameof(GetArcById) + "/{id}")]
+        public IActionResult GetArcById(int id)
+        {
+            Arc arc = animeService.GetArcById(id);
+            
+            return Ok(arc);
+        }
+
+        [HttpPost(nameof(CreateArc))]
+        public async Task<ActionResult<Arc>> CreateArc(Arc arc)
+        {
+            try
+            {
+                if (arc == null)
+                {
+                    return BadRequest();
+                }
+
+                var createdArc = animeService.CreateArc(arc);
+                return CreatedAtAction(nameof(GetArcById), new { id = createdArc.Id }, createdArc);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error occured while POSTing to a database");
+            }
         }
 
     }

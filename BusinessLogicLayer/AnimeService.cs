@@ -41,5 +41,44 @@ namespace AnimeLib.Services
                 .ToArray();
             return animes;
         }
+
+        public int GetAnimeId(string title)
+        {
+            var anime = context.Animes
+                .Where(a => a.Title.Equals(title))
+                .First();
+            return anime.Id;
+        }
+
+        public Arc GetArcById(int id)
+        {
+            Arc arc = context.Arcs
+                .Where(a => a.Id.Equals(id))
+                .First();
+            return arc;
+                
+        }
+
+        public Arc CreateArc(Arc arc)
+        {
+            using (var transaction = context.Database.BeginTransaction())
+            {
+                try
+                {
+                    context.Arcs.Add(arc);
+                    context.SaveChanges();
+                    transaction.Commit();
+                    return arc;
+                }
+                catch (Exception e)
+                {
+                    transaction.Rollback();
+                    throw e.InnerException;
+                }
+            }
+        }
     }
 }
+
+
+

@@ -232,7 +232,7 @@
 #new-arc-block {
     display: none;
 }
-.new-arc-block {
+.new-arc-block form {
     height: 150px;
     width: 100%;
     display: flex;
@@ -261,13 +261,11 @@
     height: 80px;
     flex: 1;
 }
-.arc-arc-title > label, input {
-    margin-top: 40px;
-    margin-left: 10px;
-}
 .arc-arc-title > label {
     color: #e64242;
     font-size: 18px;
+    float: right;
+    margin-right: 10px;
 }
 .arc-arc-title input {
     background-color: #333;
