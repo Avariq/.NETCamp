@@ -50,6 +50,21 @@ namespace AnimeLib.Services
             return anime.Id;
         }
 
+        public string[] GetAllAnimeTitles()
+        {
+            var animes = context.Animes
+                .ToArray();
+            int size = animes.Length;
+            string[] titles = new string[size];
+
+            for (int i = 0; i < size; ++i)
+            {
+                titles[i] = animes[i].Title;
+            }
+
+            return titles;
+        }
+
         public Arc GetArcById(int id)
         {
             Arc arc = context.Arcs

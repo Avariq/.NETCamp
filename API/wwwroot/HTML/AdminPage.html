@@ -9,6 +9,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Zen+Kurenaido&display=swap" rel="stylesheet">
     <script src="../JS/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="/resources/demos/style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
 </head>
 <body>
     <header class="header">
@@ -166,12 +170,34 @@
                 return Id;
             }
         });
+        jQuery.extend({
+            getAnimeTitles: function () {
+                var animes = null;
+                $.ajax({
+                    type: 'get',
+                    url: 'https://localhost:5001/Main/GetAnimeTitles',
+                    dataType: 'json',
+                    async: false,
+                    success: function (data) {
+                        animes = data;
+                    },
+                    error: function (errorThrown) {
+                        console.log(errorThrown);
+                    }
+                });
+                return animes;
+            }
+        });
+
+        var animes = $.getAnimeTitles();
+        $('#arc-anime-title').autocomplete({
+            source: animes
+        });
 
         $("#new-arc-form").submit(function (event) {
             event.preventDefault();
 
             var $form = $(this);
-
             var $inputs = $form.find("input");
 
             $inputs.prop("disabled", true);
