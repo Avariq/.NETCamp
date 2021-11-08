@@ -54,6 +54,7 @@ namespace AnimeLib.Services
         {
             var animes = context.Animes
                 .ToArray();
+
             int size = animes.Length;
             string[] titles = new string[size];
 
@@ -65,6 +66,21 @@ namespace AnimeLib.Services
             return titles;
         }
 
+        public string[] GetArcTitlesByAnimeId(int id)
+        {
+            var arcs = context.Arcs
+                .Where(a => a.AnimeId.Equals(id))
+                .ToArray();
+
+            int size = arcs.Length;
+            string[] titles = new string[size];
+            for (int i = 0; i < size; ++i)
+            {
+                titles[i] = arcs[i].Name;
+            }
+
+            return titles;
+        }
         public Arc GetArcById(int id)
         {
             Arc arc = context.Arcs

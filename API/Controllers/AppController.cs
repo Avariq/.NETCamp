@@ -60,6 +60,14 @@ namespace AnimeLib.API.Controllers
             return Ok(titles);
         }
 
+        [HttpGet(nameof(GetArcs) + "/{animeId}")]
+        public IActionResult GetArcs(int animeId)
+        {
+            string[] titles = animeService.GetArcTitlesByAnimeId(animeId);
+
+            return Ok(titles);
+        }
+
         [HttpGet(nameof(GetArcById) + "/{id}")]
         public IActionResult GetArcById(int id)
         {

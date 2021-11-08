@@ -188,6 +188,24 @@
                 return animes;
             }
         });
+        jQuery.extend({
+            getArcTitles: function (animeId) {
+                var arcs = null;
+                $.ajax({
+                    type: 'get',
+                    url: 'https://localhost:5001/Main/GetArcs/' + animeId,
+                    dataType: 'json',
+                    async: false,
+                    success: function (data) {
+                        arcs = data;
+                    },
+                    error: function (errorThrown) {
+                        console.log(errorThrown);
+                    }
+                });
+                return arcs;
+            }
+        });
 
         var animes = $.getAnimeTitles();
         $('#arc-anime-title').autocomplete({
@@ -203,10 +221,22 @@
             $inputs.prop("disabled", true);
 
             var animeTitle = $("#arc-anime-title").val().toString();
+            if (jQuery.inArray(animeTitle, animes) == -1) {
+                console.error("Such anime does not exist.");
+                $inputs.prop("disabled", false);
+                return;
+            }
             var Id = $.getAnimeId(animeTitle);
             console.log("Retrieved id: " + Id);
 
-            var arc_newname = $("#arc-arc-title").val().toString();
+            var new_arc = $("#arc-arc-title").val().toString();
+            var arcs = $.getArcTitles(Id);
+
+            if (jQuery.inArray(new_arc, arcs) !== -1) {
+                console.error("Such arc already exists.");
+                $inputs.prop("disabled", false);
+                return;
+            }
 
             var request = $.ajax({
                 headers: {
@@ -217,7 +247,7 @@
                 type: "post",
                 dataType: "json",
                 async: false,
-                data: JSON.stringify({"animeId": Id, "name": arc_newname})
+                data: JSON.stringify({"animeId": Id, "name": new_arc})
             });
             request.done(function (response, textStatus, jqXHR) {
                 console.log("Frontend: Success 201");
