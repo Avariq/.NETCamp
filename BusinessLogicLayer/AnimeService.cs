@@ -94,6 +94,7 @@ namespace AnimeLib.Services
             Arc arc = context.Arcs
                 .Where(a => a.Id.Equals(id))
                 .First();
+
             return arc;
                 
         }
@@ -117,14 +118,45 @@ namespace AnimeLib.Services
             }
         }
 
+        public Episode GetEpisodeById(int id)
+        {
+            Episode ep = context.Episodes
+                .Where(e => e.Id.Equals(id))
+                .First();
+
+            return ep;
+        }
+
         public int GetEpisodeId(int arcId, string epName)
         {
             var ep = context.Episodes
                 .Where(e => e.ArcId.Equals(arcId))
                 .Where(e => e.Name.Equals(epName))
-                .First();
-
+                .FirstOrDefault();
+            if (ep == null)
+            {
+                return -1;
+            }
             return ep.Id;
+        }
+
+        public Episode CreateEpisode(Episode episode)
+        {
+            using (var transaction = context.Database.BeginTransaction())
+            {
+                try
+                {
+                    context.Episodes.Add(episode);
+                    context.SaveChanges();
+                    transaction.Commit();
+                    return episode;
+                }
+                catch (Exception e)
+                {
+                    transaction.Rollback();
+                    throw e.InnerException;
+                }
+            }
         }
     }
 }

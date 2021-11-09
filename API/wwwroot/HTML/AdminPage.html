@@ -226,7 +226,27 @@
                 return id;
             }
         });
+        jQuery.extend({
+            getEpId: function (arcId, epName) {
+                var id = -1;
+                $.ajax({
+                    type: 'get',
+                    url: 'https://localhost:5001/Main/GetEpisodeId/' + arcId + '/' + epName,
+                    dataType: 'json',
+                    async: false,
+                    success: function (data) {
+                        id = data;
+                    },
+                    error: function (errorThrown) {
+                        console.log(errorThrown);
+                    }
+                });
+
+                return id;
+            }
+        });
         var animes = $.getAnimeTitles();
+        var arcs = null;
         $('#arc-anime-title').autocomplete
         ({
             source: animes,
@@ -254,7 +274,7 @@
             }
 
             var Id = $.getAnimeId(animeTitle);
-            var arcs = $.getArcTitles(Id);
+            arcs = $.getArcTitles(Id);
             $('#ep-arc-title').autocomplete
             ({
                 source: arcs,
@@ -273,21 +293,59 @@
 
             $inputs.prop("disabled", true);
 
-            var animeTitle = $("#ep-anime-title").val.toString();
-            var arcTitle = $("ep-arc-title").val.toString();
+            var animeTitle = document.getElementById("ep-anime-title").value.toString();
+            var arcTitle = document.getElementById("ep-arc-title").value.toString();
 
             if (jQuery.inArray(animeTitle, animes) == -1) {
                 console.error("Such anime does not exist.");
+                console.log(animeTitle);
                 $inputs.prop("disabled", false);
                 return;
             }
             if (jQuery.inArray(arcTitle, arcs) == -1) {
                 console.error("Such arc does not exist.");
+                console.log(arcTitle);
                 $inputs.prop("disabled", false);
                 return;
             }
 
             var arcId = $.getArcId(arcTitle);
+
+            var epName = document.getElementById("ep-title").value.toString();
+            var epLen = document.getElementById("ep-length").value;
+            var epId = $.getEpId(arcId, epName);
+
+            if (epId > 0) {
+                console.error("Such episode already exists.");
+                $inputs.prop("disabled", false);
+                return;
+            }
+
+            var request = $.ajax({
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                url: "https://localhost:5001/Main/CreateEpisode",
+                type: "post",
+                dataType: "json",
+                async: false,
+                data: JSON.stringify({ "name": epName, "duration": epLen, "arcId": arcId })
+            });
+            request.done(function (response, textStatus, jqXHR) {
+                console.log("NewEpisode: Success 201");
+            });
+
+            request.fail(function (jqXHR, textStatus, errorThrown) {
+                console.error(
+                    "The following error occurred: " +
+                    textStatus, errorThrown
+                );
+            });
+
+            request.always(function () {
+                $inputs.prop("disabled", false);
+            });
 
             
 
@@ -332,7 +390,7 @@
                 data: JSON.stringify({"animeId": Id, "name": new_arc})
             });
             request.done(function (response, textStatus, jqXHR) {
-                console.log("Frontend: Success 201");
+                console.log("NewArc: Success 201");
             });
 
             request.fail(function (jqXHR, textStatus, errorThrown) {

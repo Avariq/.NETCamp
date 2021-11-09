@@ -99,8 +99,16 @@ namespace AnimeLib.API.Controllers
             }
             catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error occured while POSTing to a database");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error occured while creating new Arc");
             }
+        }
+
+        [HttpGet(nameof(GetEpisodeById) + "/{id}")]
+        public IActionResult GetEpisodeById(int id)
+        {
+            Episode ep = animeService.GetEpisodeById(id);
+
+            return Ok(ep);
         }
 
         [HttpGet(nameof(GetEpisodeId) + "/{arcId}/{epName}")]
@@ -108,7 +116,29 @@ namespace AnimeLib.API.Controllers
         {
             int id = animeService.GetEpisodeId(arcId, epName);
 
+            /*may return -1*/
+            /*Exception handling is crucial*/
+
             return Ok(id);
+        }
+
+        [HttpPost(nameof(CreateEpisode))]
+        public async Task<ActionResult<Episode>> CreateEpisode(Episode episode)
+        {
+            try
+            {
+                if (episode == null)
+                {
+                    return BadRequest();
+                }
+
+                var createdEpisode = animeService.CreateEpisode(episode);
+                return CreatedAtAction(nameof(GetEpisodeById), new { id = createdEpisode.Id }, createdEpisode);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error occured while creating new Episode");
+            }
         }
 
     }
