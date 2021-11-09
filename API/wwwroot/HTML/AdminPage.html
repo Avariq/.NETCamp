@@ -31,62 +31,63 @@
             </ul>
         </div>
         <div id="new-anime-block">
-            <div class="new-anime-block">
-                <div class="anime-main">
-                    <div>
-                        <p>Title:</p>
-                        <input id="anime-name" type="text" name="" value="" />
+            <form id="new-anime-form">
+                <div class="new-anime-block">
+                    <div class="anime-main">
+                        <div>
+                            <p>Title:</p>
+                            <input id="anime-name" type="text" name="anime-name" value="" />
+                        </div>
+                        <div>
+                            <p>Year:</p>
+                            <input id="anime-year" type="text" name="anime-year" value="" />
+                        </div>
+                        <div>
+                            <p>Episodes:</p>
+                            <input id="anime-episodes" type="text" name="anime-episodes" value="" />
+                        </div>
                     </div>
-                    <div>
-                        <p>Year:</p>
-                        <input id="anime-year" type="text" name="" value="" />
+                    <div class="anime-description-block">
+                        <p>Description:</p>
+                        <textarea id="anime-description" name="anime-description"></textarea>
                     </div>
-                    <div>
-                        <p>Episodes:</p>
-                        <input id="anime-episodes" type="text" name="" value="" />
+                    <div class="anime-status-block">
+                        <p>Status:</p>
+                        <div class="status-choice">
+                            <input type="radio" id="s-released" name="status" value="Released" />
+                            <label for="s-released">Released</label> <br />
+                            <input type="radio" id="s-ongoing" name="status" value="Ongoing" />
+                            <label for="s-ongoing">Ongoing</label> <br />
+                            <input type="radio" id="s-announced" name="status" value="Announced" />
+                            <label for="s-announced">Announced</label> <br />
+                        </div>
                     </div>
-                </div>
-                <div class="anime-description-block">
-                    <p>Description:</p>
-                    <textarea id="anime-description"></textarea>
-                </div>
-                <div class="anime-status-block">
-                    <p>Status:</p>
-                    <div class="status-choice">
-                        <input type="radio" id="s-released" name="status" value="" />
-                        <label for="s-released">Released</label> <br />
-                        <input type="radio" id="s-ongoing" name="status" value="" />
-                        <label for="s-ongoing">Ongoing</label> <br />
-                        <input type="radio" id="s-announced" name="status" value="" />
-                        <label for="s-announced">Announced</label> <br />
+                    <div class="anime-ar-block">
+                        <p>Age Restriction:</p>
+                        <div class="ar-choice">
+                            <label><input type="radio" id="ar-g" name="ar" value="G" />G (0+)</label>
+                            <label><input type="radio" id="ar-pg12" name="ar" value="PG12" />PG12 (12+)</label>
+                            <label><input type="radio" id="R15" name="ar" value="R15" />R15 (15+)</label>
+                            <label><input type="radio" id="r18" name="ar" value="R18" />R18 (18+)</label>
+                        </div>
                     </div>
-                </div>
-                <div class="anime-ar-block">
-                    <p>Age Restriction:</p>
-                    <div class="ar-choice">
-                        <label><input type="radio" id="ar-g" name="ar" value="" />G (0+)</label>
-                        <label><input type="radio" id="ar-pg12" name="ar" value="" />PG12 (12+)</label>
-                        <label><input type="radio" id="R15" name="ar" value="" />R15 (15+)</label>
-                        <label><input type="radio" id="r18" name="ar" value="" />R18 (18+)</label>
+                    <div class="anime-genres-block">
+                        <p>Genres:</p>
+                        <div class="genre-choice">
+                            <label><input type="checkbox" id="g-seinen" name="anime-genre" value="Seinen" />Seinen</label>
+                            <label><input type="checkbox" id="g-ninja" name="anime-genre" value="Ninja" />Ninja</label>
+                            <label><input type="checkbox" id="g-swords" name="anime-genre" value="Swords" />Swords</label>
+                            <label><input type="checkbox" id="g-action" name="anime-genre" value="Action" />Action</label>
+                        </div>
                     </div>
-                </div>
-                <div class="anime-genres-block">
-                    <p>Genres:</p>
-                    <div class="genre-choice">
-                        <label><input type="checkbox" id="g-seinen" />Seinen</label>
-                        <label><input type="checkbox" id="g-ninja" />Ninja</label>
-                        <label><input type="checkbox" id="g-swords" />Swords</label>
-                        <label><input type="checkbox" id="g-action" />Action</label>
+                    <div class="upload-image-block">
+                        <label>Select an image:<input type="file" id="img-file" name="files" accept="image/*" /></label>
+                    </div>
+                    <div class="anime-submit-block">
+                        <input id="anime-submit" class="anime-submit" type="submit" value="Submit" />
                     </div>
                 </div>
-                <div class="upload-image-block">
-                    <label>Select an image:<input type="file" id="img-file" name="Img" accept="image/*" /></label>
-                </div>
-                <div class="anime-submit-block">
-                    <input id="anime-submit" class="anime-submit" type="submit" value="Submit" />
-                </div>
-            </div>
-            
+            </form>
         </div>
         
         <div id="new-arc-block">
@@ -387,7 +388,7 @@
                 type: "post",
                 dataType: "json",
                 async: false,
-                data: JSON.stringify({"animeId": Id, "name": new_arc})
+                data: JSON.stringify({ "animeId": Id, "name": new_arc })
             });
             request.done(function (response, textStatus, jqXHR) {
                 console.log("NewArc: Success 201");
@@ -403,8 +404,42 @@
             request.always(function () {
                 $inputs.prop("disabled", false);
             });
-        })
+        });
 
+        $("#new-anime-form").submit(function (event) {
+            event.preventDefault();
+            var $form = $(this);
+            var $inputs = $form.find("input");
+
+            var animeName = $('#anime-name').val().toString();
+            var animeYear = $('#anime-year').val();
+            var animeEpisodes = $('#anime-episodes').val();
+            var animeDescription = $('#anime-description').val().toString();
+
+            var animeStatus = $("input:radio[name='status']:checked").val();
+            var animeAgeRestriction = $("input:radio[name='ar']:checked").val();
+
+            var animeGenres = new Array();
+            $.each($("input[name='anime-genre']:checked"), function () {
+                animeGenres.push($(this).val().toString());
+            });
+
+            var files = document.getElementById('img-file').files;
+            var formData = new FormData();
+            formData.append("files", files[0]);
+            
+
+            $.ajax({
+                url: "https://localhost:5001/FileUpload",
+                data: formData,
+                processData: false,
+                contentType: false,
+                type: "post",
+                success: function (data) {
+                    console.log("The file has been succsessfulyy uploaded.");
+                }
+            });
+        });
     </script>
 </body>
 </html>
