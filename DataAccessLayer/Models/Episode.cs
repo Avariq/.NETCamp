@@ -13,5 +13,6 @@ namespace AnimeLib.Domain.Models
         public string Name { get; set; }
         [Required]
         public int Duration { get; set; }
+        public int ArcId { get; set; }
     }
 }

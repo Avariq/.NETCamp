@@ -208,16 +208,43 @@
                 return arcs;
             }
         });
-
+        jQuery.extend({
+            getArcId: function (arcName) {
+                var id = -1;
+                $.ajax({
+                    type: 'get',
+                    url: 'https://localhost:5001/Main/GetArcId/' + arcName,
+                    dataType: 'json',
+                    async: false,
+                    success: function (data) {
+                        id = data;
+                    },
+                    error: function (errorThrown) {
+                        console.log(errorThrown);
+                    }
+                });
+                return id;
+            }
+        });
         var animes = $.getAnimeTitles();
-        $('#arc-anime-title').autocomplete({
-            source: animes
+        $('#arc-anime-title').autocomplete
+        ({
+            source: animes,
+            minLength: 0
+        })
+        .focus(function () {
+            $(this).autocomplete('search', $(this).val())
         });
-        $('#ep-anime-title').autocomplete({
-            source: animes
+        $('#ep-anime-title').autocomplete
+        ({
+            source: animes,
+            minLength: 0
+        })
+        .focus(function () {
+            $(this).autocomplete('search', $(this).val())
         });
 
-        $('#ep-arc-title').focus(function () {
+        $('#ep-anime-title').blur(function () {
 
             var animeTitle = document.getElementById('ep-anime-title').value;
 
@@ -228,9 +255,13 @@
 
             var Id = $.getAnimeId(animeTitle);
             var arcs = $.getArcTitles(Id);
-
-            $('#ep-arc-title').autocomplete({
-                source: arcs
+            $('#ep-arc-title').autocomplete
+            ({
+                source: arcs,
+                minLength: 0
+            })
+            .focus(function () {
+                $(this).autocomplete('search', $(this).val())
             });
         });
 
@@ -256,8 +287,8 @@
                 return;
             }
 
+            var arcId = $.getArcId(arcTitle);
 
-            var Id = $.getAnimeId(animeTitle);
             
 
             

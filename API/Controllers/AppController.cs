@@ -76,6 +76,14 @@ namespace AnimeLib.API.Controllers
             return Ok(arc);
         }
 
+        [HttpGet(nameof(GetArcId) + "/{arcName}")]
+        public IActionResult GetArcId(string arcName)
+        {
+            int id = animeService.GetArcId(arcName);
+
+            return Ok(id);
+        }
+
         [HttpPost(nameof(CreateArc))]
         public async Task<ActionResult<Arc>> CreateArc(Arc arc)
         {
@@ -93,6 +101,14 @@ namespace AnimeLib.API.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error occured while POSTing to a database");
             }
+        }
+
+        [HttpGet(nameof(GetEpisodeId) + "/{arcId}/{epName}")]
+        public IActionResult GetEpisodeId(int arcId, string epName)
+        {
+            int id = animeService.GetEpisodeId(arcId, epName);
+
+            return Ok(id);
         }
 
     }

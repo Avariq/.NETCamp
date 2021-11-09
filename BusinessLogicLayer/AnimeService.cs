@@ -81,6 +81,14 @@ namespace AnimeLib.Services
 
             return titles;
         }
+        public int GetArcId(string arcName)
+        {
+            var arc = context.Arcs
+                .Where(a => a.Name.Equals(arcName))
+                .First();
+
+            return arc.Id;
+        }
         public Arc GetArcById(int id)
         {
             Arc arc = context.Arcs
@@ -107,6 +115,16 @@ namespace AnimeLib.Services
                     throw e.InnerException;
                 }
             }
+        }
+
+        public int GetEpisodeId(int arcId, string epName)
+        {
+            var ep = context.Episodes
+                .Where(e => e.ArcId.Equals(arcId))
+                .Where(e => e.Name.Equals(epName))
+                .First();
+
+            return ep.Id;
         }
     }
 }
