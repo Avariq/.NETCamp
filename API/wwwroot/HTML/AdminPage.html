@@ -106,19 +106,21 @@
         </div>
 
         <div id="new-episode-block">
-            <div class="new-episode-block">
-                <div class="ep-anime-block">
-                    <label>Anime name:<input id="ep-anime-title" type="text" /></label>
-                    <label>Arc name:<input id="ep-arc-title" type="text" /></label>
+            <form id="new-episode-form">
+                <div class="new-episode-block">
+                    <div class="ep-anime-block">
+                        <label>Anime name:<input id="ep-anime-title" type="text" /></label>
+                        <label>Arc name:<input id="ep-arc-title" type="text" /></label>
+                    </div>
+                    <div class="ep-episode-block">
+                        <label>Episode name:<input id="ep-title" type="text" /></label>
+                        <label>Episode length (min):<input id="ep-length" type="text" /></label>
+                    </div>
+                    <div class="ep-submit-block">
+                        <input id="ep-submit" class="ep-submit" type="submit" value="Submit" />
+                    </div>
                 </div>
-                <div class="ep-episode-block">
-                    <label>Episode name:<input id="ep-title" type="text" /></label>
-                    <label>Episode length (min):<input id="ep-length" type="text" /></label>
-                </div>
-                <div class="ep-submit-block">
-                    <input id="ep-submit" class="ep-submit" type="submit" value="Submit" />
-                </div>
-            </div>
+            </form>     
         </div>
     </div>
 
@@ -157,7 +159,7 @@
                 var Id = -1;
                 $.ajax({
                     type: "get",
-                    url: "https://localhost:5001/Main/GetAnimeIdByTitle" + "/" + animeTitle,
+                    url: "https://localhost:5001/Main/GetAnimeIdByTitle/" + animeTitle,
                     dataType: "json",
                     async: false,
                     success: function (data) {
@@ -211,6 +213,55 @@
         $('#arc-anime-title').autocomplete({
             source: animes
         });
+        $('#ep-anime-title').autocomplete({
+            source: animes
+        });
+
+        $('#ep-arc-title').focus(function () {
+
+            var animeTitle = document.getElementById('ep-anime-title').value;
+
+            if (jQuery.inArray(animeTitle, animes) == -1) {
+                console.error("Such anime does not exist.");
+                return;
+            }
+
+            var Id = $.getAnimeId(animeTitle);
+            var arcs = $.getArcTitles(Id);
+
+            $('#ep-arc-title').autocomplete({
+                source: arcs
+            });
+        });
+
+        $("#new-episode-form").submit(function (event) {
+            event.preventDefault();
+
+            var $form = $(this);
+            var $inputs = $form.find("input");
+
+            $inputs.prop("disabled", true);
+
+            var animeTitle = $("#ep-anime-title").val.toString();
+            var arcTitle = $("ep-arc-title").val.toString();
+
+            if (jQuery.inArray(animeTitle, animes) == -1) {
+                console.error("Such anime does not exist.");
+                $inputs.prop("disabled", false);
+                return;
+            }
+            if (jQuery.inArray(arcTitle, arcs) == -1) {
+                console.error("Such arc does not exist.");
+                $inputs.prop("disabled", false);
+                return;
+            }
+
+
+            var Id = $.getAnimeId(animeTitle);
+            
+
+            
+        })
 
         $("#new-arc-form").submit(function (event) {
             event.preventDefault();
