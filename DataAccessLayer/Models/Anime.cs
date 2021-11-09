@@ -30,6 +30,10 @@ namespace AnimeLib.Domain.Models
         [MaxLength(500)]
         [Column(TypeName = "varchar(500)")]
         public string Description { get; set; }
+        [Required]
+        public int StatusId { get; set; }
+        [Required]
+        public int AgeRestrictionId { get; set; }
         public virtual Status Status { get; set; }
         public virtual AgeRestriction AgeRestriction { get; set; }
         public virtual ICollection<Arc> Arcs { get; set; }

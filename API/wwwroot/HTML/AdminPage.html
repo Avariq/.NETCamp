@@ -246,6 +246,43 @@
                 return id;
             }
         });
+        jQuery.extend({
+            getStatusId: function (statusName) {
+                var id = -1;
+                $.ajax({
+                    type: 'get',
+                    url: 'https://localhost:5001/Main/GetStatusId/' + statusName,
+                    dataType: 'json',
+                    async: false,
+                    success: function (data) {
+                        console.log("retrieved data:", data);
+                        id = data;
+                    },
+                    error: function (errorThrown) {
+                        console.log(errorThrown);
+                    }
+                });
+                return id;
+            }
+        });
+        jQuery.extend({
+            getAgeRestrictionId: function (ARCode) {
+                var id = -1;
+                $.ajax({
+                    type: 'get',
+                    url: 'https://localhost:5001/Main/GetAgeRestrictionId/' + ARCode,
+                    dataType: 'json',
+                    async: false,
+                    success: function (data) {
+                        id = data;
+                    },
+                    error: function (errorThrown) {
+                        console.log(errorThrown);
+                    }
+                });
+                return id;
+            }
+        });
         var animes = $.getAnimeTitles();
         var arcs = null;
         $('#arc-anime-title').autocomplete
@@ -416,8 +453,11 @@
             var animeEpisodes = $('#anime-episodes').val();
             var animeDescription = $('#anime-description').val().toString();
 
-            var animeStatus = $("input:radio[name='status']:checked").val();
-            var animeAgeRestriction = $("input:radio[name='ar']:checked").val();
+            var animeStatus = $("input:radio[name='status']:checked").val().toString();
+            var animeAgeRestriction = $("input:radio[name='ar']:checked").val().toString();
+
+            console.log("here:", animeStatus);
+            console.log("here2:", animeAgeRestriction);
 
             var animeGenres = new Array();
             $.each($("input[name='anime-genre']:checked"), function () {
@@ -427,17 +467,54 @@
             var files = document.getElementById('img-file').files;
             var formData = new FormData();
             formData.append("files", files[0]);
-            
+
+            var filename = files[0].name;
+
+            var animeStatusId = $.getStatusId(animeStatus);
+            console.log("statusId:", animeStatusId);
+            var animeAgeRestrictionId = $.getAgeRestrictionId(animeAgeRestriction);
+            console.log("restr:", animeAgeRestrictionId);
+
+            var animeData = {
+                "title": animeName, "rating": 0, "year": animeYear, "episodes": animeEpisodes, "views": 0,
+                "image": "Images/" + filename, "votes": 0, "description": animeDescription, "statusId": animeStatusId, "ageRestrictionId": animeAgeRestrictionId
+            };
 
             $.ajax({
                 url: "https://localhost:5001/FileUpload",
                 data: formData,
                 processData: false,
                 contentType: false,
+                async: false,
                 type: "post",
                 success: function (data) {
                     console.log("The file has been succsessfulyy uploaded.");
                 }
+            });
+            var request = $.ajax({
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                url: "https://localhost:5001/Main/CreateAnime",
+                type: "post",
+                dataType: "json",
+                async: false,
+                data: JSON.stringify(animeData)
+            });
+            request.done(function (response, textStatus, jqXHR) {
+                console.log("NewAnime: Success 201");
+            });
+
+            request.fail(function (jqXHR, textStatus, errorThrown) {
+                console.error(
+                    "The following error occurred: " +
+                    textStatus, errorThrown
+                );
+            });
+
+            request.always(function () {
+                $inputs.prop("disabled", false);
             });
         });
     </script>

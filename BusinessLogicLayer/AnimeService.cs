@@ -95,10 +95,35 @@ namespace AnimeLib.Services
                 .Where(a => a.Id.Equals(id))
                 .First();
 
-            return arc;
-                
+            return arc; 
         }
 
+        public Anime GetAnimeById(int id)
+        {
+            var anime = context.Animes
+                .Where(a => a.Id.Equals(id))
+                .First();
+            return anime;
+        }
+
+        public Anime CreateAnime(Anime anime)
+        {
+            using (var transaction = context.Database.BeginTransaction())
+            {
+                try
+                {
+                    context.Animes.Add(anime);
+                    context.SaveChanges();
+                    transaction.Commit();
+                    return anime;
+                }
+                catch (Exception e)
+                {
+                    transaction.Rollback();
+                    throw e.InnerException;
+                }
+            }
+        }
         public Arc CreateArc(Arc arc)
         {
             using (var transaction = context.Database.BeginTransaction())
@@ -158,6 +183,25 @@ namespace AnimeLib.Services
                 }
             }
         }
+
+        public int GetStatusId(string statusName)
+        {
+            var status = context.Statuses
+                .Where(s => s.StatusName.Equals(statusName))
+                .First();
+
+            return status.Id;
+        }
+
+        public int GetAgeRestrictionId(string ageRestrictionCode)
+        {
+            var ar = context.AgeRestrictions
+                .Where(a => a.RestrictionCode.Equals(ageRestrictionCode))
+                .First();
+
+            return ar.Id;
+        }
+
     }
 }
 

@@ -60,6 +60,33 @@ namespace AnimeLib.API.Controllers
             return Ok(titles);
         }
 
+        [HttpGet(nameof(GetAnimeById) + "/{animeId}")]
+        public IActionResult GetAnimeById(int animeId)
+        {
+            Anime anime = animeService.GetAnimeById(animeId);
+
+            return Ok(anime);
+        }
+
+        [HttpPost(nameof(CreateAnime))]
+        public async Task<ActionResult<Anime>> CreateAnime(Anime anime)
+        {
+            try
+            {
+                if (anime == null)
+                {
+                    return BadRequest();
+                }
+
+                var createdAnime = animeService.CreateAnime(anime);
+                return CreatedAtAction(nameof(GetAnimeById), new { id = createdAnime.Id }, createdAnime);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error occured while creating new Anime");
+            }
+        }
+
         [HttpGet(nameof(GetArcs) + "/{animeId}")]
         public IActionResult GetArcs(int animeId)
         {
@@ -139,6 +166,22 @@ namespace AnimeLib.API.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error occured while creating new Episode");
             }
+        }
+
+        [HttpGet(nameof(GetStatusId) + "/{statusName}")]
+        public IActionResult GetStatusId(string statusName)
+        {
+            int id = animeService.GetStatusId(statusName);
+
+            return Ok(id);
+        }
+
+        [HttpGet(nameof(GetAgeRestrictionId) + "/{ageRestrictionCode}")]
+        public IActionResult GetAgeRestrictionId(string ageRestrictionCode)
+        {
+            int id = animeService.GetAgeRestrictionId(ageRestrictionCode);
+
+            return Ok(id);
         }
 
     }
