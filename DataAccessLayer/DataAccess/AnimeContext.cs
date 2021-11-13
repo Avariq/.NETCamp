@@ -15,5 +15,18 @@ namespace AnimeLib.Domain.DataAccess
         public DbSet<Episode> Episodes { get; set; }
         public DbSet<Status> Statuses { get; set; }
         public DbSet<AgeRestriction> AgeRestrictions { get; set; }
+        public DbSet<AnimeGenre> AnimeGenre { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<AnimeGenre>()
+                .HasKey(k => new { k.GenreId, k.AnimeId });
+            modelBuilder.Entity<Anime>()
+                .Property(a => a.Rating)
+                .HasDefaultValue(0);
+            modelBuilder.Entity<Anime>()
+                .Property(a => a.Views)
+                .HasDefaultValue(0);
+        }
     }
 }

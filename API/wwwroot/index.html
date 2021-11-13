@@ -79,13 +79,12 @@
                             html += '1+';
                         }
                         html += '</li>';
-                        
-                        if (elem.animeGenres.length > 0) {
+                        if (elem.genres.length > 0) {
                             html += '<li class="categories-list">';
                             html += '<span>Genres:</span>';
                             html += '<ul>'
-                            elem.animeGenres.forEach(function (cat) {
-                                html += '<li>' + cat.name + '</li>';
+                            elem.genres.forEach(function (cat) {
+                                html += '<li>' + cat.genre.name + '</li>';
                             })
                             html += '</ul>';
                         }

@@ -14,6 +14,6 @@ namespace AnimeLib.Domain.Models
         [Column(TypeName = "varchar(35)")]
         public string Name { get; set; }
 
-        public virtual ICollection<Anime> Animes { get; set; }
+        public virtual ICollection<AnimeGenre> Animes { get; set; }
     }
 }

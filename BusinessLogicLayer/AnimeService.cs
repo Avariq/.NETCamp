@@ -23,8 +23,10 @@ namespace AnimeLib.Services
             var animes = context.Animes
                 .Include(s => s.Status)
                 .Include(rs => rs.AgeRestriction)
-                .Include(a => a.AnimeGenres)
+                .Include(a => a.Genres)
+                .ThenInclude(a => a.Genre)
                 .Include(arc => arc.Arcs)
+                .ThenInclude(ep => ep.Episodes)
                 .ToArray();
             return animes;
         }
@@ -34,7 +36,7 @@ namespace AnimeLib.Services
             var animes = context.Animes
                 .Include(s => s.Status)
                 .Include(restr => restr.AgeRestriction)
-                .Include(g => g.AnimeGenres)
+                .Include(g => g.Genres)
                 .Include(arc => arc.Arcs)
                 .ThenInclude(ep => ep.Episodes)
                 .Where(a => a.Title.Contains(title_fragment))
@@ -105,22 +107,34 @@ namespace AnimeLib.Services
                 .Where(a => a.Id.Equals(id))
                 .Include(s => s.Status)
                 .Include(restr => restr.AgeRestriction)
-                .Include(g => g.AnimeGenres)
+                .Include(g => g.Genres)
                 .Include(arc => arc.Arcs)
                 .ThenInclude(ep => ep.Episodes)
                 .First();
+
             return anime;
         }
 
-        public Anime CreateAnime(Anime anime)
+        public Anime CreateAnime(Anime anime, Genre[] genres)
         {
             using (var transaction = context.Database.BeginTransaction())
             {
                 try
                 {
+                    /*Genre genre = context.Genres
+                        .Where(g => g.Id.Equals(1)) З цією штукою заводиться, хоча вона ідентична до того. шо я з фронта передаю
+                        .First();*/
+
+                    anime.Genres = new List<AnimeGenre>();
+                    for (int i = 0; i < genres.Length; ++i)
+                    {
+                        anime.Genres.Add(new AnimeGenre { Genre = genres[i], Anime = anime });
+                    }
+
                     context.Animes.Add(anime);
                     context.SaveChanges();
                     transaction.Commit();
+
                     return anime;
                 }
                 catch (Exception e)
@@ -139,6 +153,7 @@ namespace AnimeLib.Services
                     context.Arcs.Add(arc);
                     context.SaveChanges();
                     transaction.Commit();
+
                     return arc;
                 }
                 catch (Exception e)
@@ -206,6 +221,14 @@ namespace AnimeLib.Services
                 .First();
 
             return ar.Id;
+        }
+
+        public Genre[] GetAllGenres()
+        {
+            var genres = context.Genres
+                .ToArray();
+
+            return genres;
         }
 
     }

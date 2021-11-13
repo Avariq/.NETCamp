@@ -73,11 +73,8 @@
                     </div>
                     <div class="anime-genres-block">
                         <p>Genres:</p>
-                        <div class="genre-choice">
-                            <label><input type="checkbox" id="g-seinen" name="anime-genre" value="Seinen" />Seinen</label>
-                            <label><input type="checkbox" id="g-ninja" name="anime-genre" value="Ninja" />Ninja</label>
-                            <label><input type="checkbox" id="g-swords" name="anime-genre" value="Swords" />Swords</label>
-                            <label><input type="checkbox" id="g-action" name="anime-genre" value="Action" />Action</label>
+                        <div id="genre-choice" class="genre-choice">
+                            
                         </div>
                     </div>
                     <div class="upload-image-block">
@@ -126,8 +123,30 @@
     </div>
 
     <script type="text/javascript">
+
+        jQuery.extend({
+            getAllGenres: function () {
+                var genres = Array();
+                $.ajax({
+                    type: 'get',
+                    url: 'https://localhost:5001/api/Anime/GetAllGenres',
+                    dataType: 'json',
+                    async: false,
+                    success: function (data) {
+                        genres = data;
+                    },
+                    error: function (errorThrown) {
+                        console.log(errorThrown);
+                    }
+                });
+                return genres;
+            }
+        });
+
+        var genres = null;
+
         $(document).ready(function () {
-            
+            genres = $.getAllGenres();
         })
 
         $("#new-anime").click(function () {
@@ -137,6 +156,9 @@
             $("#new-episode-block").hide();
             $("#new-anime-block").fadeIn();
             $("#new-anime").addClass("viewing");
+            for (var i = 0; i < genres.length; i++) {
+                $("#genre-choice").append('<label><input type="checkbox" name="anime-genre" value="' + genres[i].name + '" />' + genres[i].name + '</label>');
+            }
         });
         $("#new-arc").click(function () {
             $("#new-anime").removeClass("viewing");
@@ -283,6 +305,8 @@
                 return id;
             }
         });
+        
+
         var animes = $.getAnimeTitles();
         var arcs = null;
         $('#arc-anime-title').autocomplete
@@ -464,6 +488,15 @@
                 animeGenres.push($(this).val().toString());
             });
 
+            var genresToReturn = Array();
+            for (var i = 0; i < animeGenres.length; i++) {
+                for (var j = 0; j < genres.length; j++) {
+                    if (animeGenres[i] == genres[j].name) {
+                        genresToReturn.push(genres[j]);
+                    }
+                }
+            }
+
             var files = document.getElementById('img-file').files;
             var formData = new FormData();
             formData.append("files", files[0]);
@@ -475,9 +508,12 @@
             var animeAgeRestrictionId = $.getAgeRestrictionId(animeAgeRestriction);
             console.log("restr:", animeAgeRestrictionId);
 
-            var animeData = {
-                "title": animeName, "rating": 0, "year": animeYear, "episodes": animeEpisodes, "views": 0,
-                "image": "Images/" + filename, "votes": 0, "description": animeDescription, "statusId": animeStatusId, "ageRestrictionId": animeAgeRestrictionId
+            var animeData =
+            {
+                "Anime" : { "title": animeName, "year": animeYear, "episodes": animeEpisodes,
+                    "image": "Images/" + filename, "description": animeDescription, "statusId": animeStatusId, "ageRestrictionId": animeAgeRestrictionId
+                },
+                "Genres" : genresToReturn
             };
 
             $.ajax({

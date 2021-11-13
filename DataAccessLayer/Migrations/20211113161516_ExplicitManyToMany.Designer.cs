@@ -3,14 +3,16 @@ using AnimeLib.Domain.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AnimeLib.Domain.Migrations
 {
     [DbContext(typeof(AnimeContext))]
-    partial class AnimeContextModelSnapshot : ModelSnapshot
+    [Migration("20211113161516_ExplicitManyToMany")]
+    partial class ExplicitManyToMany
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -62,9 +64,7 @@ namespace AnimeLib.Domain.Migrations
                         .HasColumnType("varchar(100)");
 
                     b.Property<float>("Rating")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("real")
-                        .HasDefaultValue(0f);
+                        .HasColumnType("real");
 
                     b.Property<int>("StatusId")
                         .HasColumnType("int");
@@ -75,9 +75,7 @@ namespace AnimeLib.Domain.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<int>("Views")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
+                        .HasColumnType("int");
 
                     b.Property<int>("Votes")
                         .HasColumnType("int");

@@ -37,7 +37,7 @@ namespace AnimeLib.Domain.Models
         public virtual Status Status { get; set; }
         public virtual AgeRestriction AgeRestriction { get; set; }
         public virtual ICollection<Arc> Arcs { get; set; }
-        public virtual ICollection<Genre> AnimeGenres { get; set; }
+        public virtual ICollection<AnimeGenre> Genres { get; set; }
 
     }
 }

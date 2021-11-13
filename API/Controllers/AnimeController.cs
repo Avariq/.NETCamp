@@ -1,6 +1,8 @@
-﻿using AnimeLib.Domain.DataAccess;
+﻿using AnimeLib.API.Models;
+using AnimeLib.Domain.DataAccess;
 using AnimeLib.Domain.Models;
 using AnimeLib.Services;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -19,11 +21,13 @@ namespace AnimeLib.API.Controllers
     {
         private readonly ILogger logger;
         private readonly AnimeService animeService;
+        private readonly IMapper mapper;
 
-        public AnimeController(ILogger<AnimeController> _logger, AnimeService _animeService)
+        public AnimeController(ILogger<AnimeController> _logger, AnimeService _animeService, IMapper _mapper)
         {
             logger = _logger;
             animeService = _animeService;
+            mapper = _mapper;
         }
 
         [HttpGet(nameof(GetAll))]
@@ -69,16 +73,19 @@ namespace AnimeLib.API.Controllers
         }
 
         [HttpPost(nameof(CreateAnime))]
-        public async Task<ActionResult<Anime>> CreateAnime([FromBody] Anime anime)
+        public async Task<ActionResult<Anime>> CreateAnime([FromBody] AnimeArgs inputAnime)
         {
             try
             {
-                if (anime == null)
+                if (inputAnime == null)
                 {
                     return BadRequest();
                 }
 
-                var createdAnime = animeService.CreateAnime(anime);
+                var anime = mapper.Map<Anime>(inputAnime.Anime);
+
+                var createdAnime = animeService.CreateAnime(anime, inputAnime.Genres);
+                Console.WriteLine(createdAnime.Id);
                 return CreatedAtAction(nameof(GetAnimeById), new { id = createdAnime.Id }, createdAnime);
             }
             catch (Exception)
@@ -86,8 +93,6 @@ namespace AnimeLib.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error occured while creating new Anime");
             }
         }
-
-        
 
         [HttpGet(nameof(GetStatusId) + "/{statusName}")]
         public IActionResult GetStatusId(string statusName)
@@ -103,6 +108,14 @@ namespace AnimeLib.API.Controllers
             int id = animeService.GetAgeRestrictionId(ageRestrictionCode);
 
             return Ok(id);
+        }
+
+        [HttpGet(nameof(GetAllGenres))]
+        public IActionResult GetAllGenres()
+        {
+            var genres = animeService.GetAllGenres();
+
+            return Ok(genres);
         }
 
     }
