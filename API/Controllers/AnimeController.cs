@@ -14,13 +14,13 @@ using System.Threading.Tasks;
 namespace AnimeLib.API.Controllers
 {
     [ApiController]
-    [Route("/[controller]")]
-    public class MainController : ControllerBase
+    [Route("api/[controller]")]
+    public class AnimeController : ControllerBase
     {
         private readonly ILogger logger;
         private readonly AnimeService animeService;
 
-        public MainController(ILogger<MainController> _logger, AnimeService _animeService)
+        public AnimeController(ILogger<AnimeController> _logger, AnimeService _animeService)
         {
             logger = _logger;
             animeService = _animeService;
@@ -69,7 +69,7 @@ namespace AnimeLib.API.Controllers
         }
 
         [HttpPost(nameof(CreateAnime))]
-        public async Task<ActionResult<Anime>> CreateAnime(Anime anime)
+        public async Task<ActionResult<Anime>> CreateAnime([FromBody] Anime anime)
         {
             try
             {
@@ -87,86 +87,7 @@ namespace AnimeLib.API.Controllers
             }
         }
 
-        [HttpGet(nameof(GetArcs) + "/{animeId}")]
-        public IActionResult GetArcs(int animeId)
-        {
-            string[] titles = animeService.GetArcTitlesByAnimeId(animeId);
-
-            return Ok(titles);
-        }
-
-        [HttpGet(nameof(GetArcById) + "/{id}")]
-        public IActionResult GetArcById(int id)
-        {
-            Arc arc = animeService.GetArcById(id);
-            
-            return Ok(arc);
-        }
-
-        [HttpGet(nameof(GetArcId) + "/{arcName}")]
-        public IActionResult GetArcId(string arcName)
-        {
-            int id = animeService.GetArcId(arcName);
-
-            return Ok(id);
-        }
-
-        [HttpPost(nameof(CreateArc))]
-        public async Task<ActionResult<Arc>> CreateArc(Arc arc)
-        {
-            try
-            {
-                if (arc == null)
-                {
-                    return BadRequest();
-                }
-
-                var createdArc = animeService.CreateArc(arc);
-                return CreatedAtAction(nameof(GetArcById), new { id = createdArc.Id }, createdArc);
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error occured while creating new Arc");
-            }
-        }
-
-        [HttpGet(nameof(GetEpisodeById) + "/{id}")]
-        public IActionResult GetEpisodeById(int id)
-        {
-            Episode ep = animeService.GetEpisodeById(id);
-
-            return Ok(ep);
-        }
-
-        [HttpGet(nameof(GetEpisodeId) + "/{arcId}/{epName}")]
-        public IActionResult GetEpisodeId(int arcId, string epName)
-        {
-            int id = animeService.GetEpisodeId(arcId, epName);
-
-            /*may return -1*/
-            /*Exception handling is crucial*/
-
-            return Ok(id);
-        }
-
-        [HttpPost(nameof(CreateEpisode))]
-        public async Task<ActionResult<Episode>> CreateEpisode(Episode episode)
-        {
-            try
-            {
-                if (episode == null)
-                {
-                    return BadRequest();
-                }
-
-                var createdEpisode = animeService.CreateEpisode(episode);
-                return CreatedAtAction(nameof(GetEpisodeById), new { id = createdEpisode.Id }, createdEpisode);
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error occured while creating new Episode");
-            }
-        }
+        
 
         [HttpGet(nameof(GetStatusId) + "/{statusName}")]
         public IActionResult GetStatusId(string statusName)

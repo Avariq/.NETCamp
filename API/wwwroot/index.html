@@ -45,7 +45,7 @@
         var Manager = {
             GetAllAnimes: function () {
                 var obj = "";
-                var sourceUrl = "https://localhost:5001/Main/GetAll";
+                var sourceUrl = "https://localhost:5001/api/Anime/GetAll";
                 window.Manager.GetAPI(sourceUrl, onSuccess, onFail);
                 function onSuccess(jsonData) {
                     obj = jsonData;

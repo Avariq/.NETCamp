@@ -160,7 +160,7 @@
                 var Id = -1;
                 $.ajax({
                     type: "get",
-                    url: "https://localhost:5001/Main/GetAnimeIdByTitle/" + animeTitle,
+                    url: "https://localhost:5001/api/Anime/GetAnimeIdByTitle/" + animeTitle,
                     dataType: "json",
                     async: false,
                     success: function (data) {
@@ -178,7 +178,7 @@
                 var animes = null;
                 $.ajax({
                     type: 'get',
-                    url: 'https://localhost:5001/Main/GetAnimeTitles',
+                    url: 'https://localhost:5001/api/Anime/GetAnimeTitles',
                     dataType: 'json',
                     async: false,
                     success: function (data) {
@@ -196,7 +196,7 @@
                 var arcs = null;
                 $.ajax({
                     type: 'get',
-                    url: 'https://localhost:5001/Main/GetArcs/' + animeId,
+                    url: 'https://localhost:5001/api/Arc/GetArcs/' + animeId,
                     dataType: 'json',
                     async: false,
                     success: function (data) {
@@ -214,7 +214,7 @@
                 var id = -1;
                 $.ajax({
                     type: 'get',
-                    url: 'https://localhost:5001/Main/GetArcId/' + arcName,
+                    url: 'https://localhost:5001/api/Arc/GetArcId/' + arcName,
                     dataType: 'json',
                     async: false,
                     success: function (data) {
@@ -232,7 +232,7 @@
                 var id = -1;
                 $.ajax({
                     type: 'get',
-                    url: 'https://localhost:5001/Main/GetEpisodeId/' + arcId + '/' + epName,
+                    url: 'https://localhost:5001/api/Episode/GetEpisodeId/' + arcId + '/' + epName,
                     dataType: 'json',
                     async: false,
                     success: function (data) {
@@ -251,7 +251,7 @@
                 var id = -1;
                 $.ajax({
                     type: 'get',
-                    url: 'https://localhost:5001/Main/GetStatusId/' + statusName,
+                    url: 'https://localhost:5001/api/Anime/GetStatusId/' + statusName,
                     dataType: 'json',
                     async: false,
                     success: function (data) {
@@ -270,7 +270,7 @@
                 var id = -1;
                 $.ajax({
                     type: 'get',
-                    url: 'https://localhost:5001/Main/GetAgeRestrictionId/' + ARCode,
+                    url: 'https://localhost:5001/api/Anime/GetAgeRestrictionId/' + ARCode,
                     dataType: 'json',
                     async: false,
                     success: function (data) {
@@ -364,7 +364,7 @@
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
-                url: "https://localhost:5001/Main/CreateEpisode",
+                url: "https://localhost:5001/api/Episode/CreateEpisode",
                 type: "post",
                 dataType: "json",
                 async: false,
@@ -421,7 +421,7 @@
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
-                url: "https://localhost:5001/Main/CreateArc",
+                url: "https://localhost:5001/api/Arc/CreateArc",
                 type: "post",
                 dataType: "json",
                 async: false,
@@ -496,7 +496,7 @@
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
-                url: "https://localhost:5001/Main/CreateAnime",
+                url: "https://localhost:5001/api/Anime/CreateAnime",
                 type: "post",
                 dataType: "json",
                 async: false,

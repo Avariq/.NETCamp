@@ -93,6 +93,7 @@ namespace AnimeLib.Services
         {
             Arc arc = context.Arcs
                 .Where(a => a.Id.Equals(id))
+                .Include(a => a.Episodes)
                 .First();
 
             return arc; 
@@ -102,6 +103,11 @@ namespace AnimeLib.Services
         {
             var anime = context.Animes
                 .Where(a => a.Id.Equals(id))
+                .Include(s => s.Status)
+                .Include(restr => restr.AgeRestriction)
+                .Include(g => g.AnimeGenres)
+                .Include(arc => arc.Arcs)
+                .ThenInclude(ep => ep.Episodes)
                 .First();
             return anime;
         }
