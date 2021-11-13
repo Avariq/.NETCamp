@@ -128,7 +128,11 @@ namespace AnimeLib.Services
                     anime.Genres = new List<AnimeGenre>();
                     for (int i = 0; i < genres.Length; ++i)
                     {
-                        anime.Genres.Add(new AnimeGenre { Genre = genres[i], Anime = anime });
+                        Genre genre = context.Genres
+                            .Where(g => g.Id.Equals(genres[i].Id))
+                            .First();
+
+                        anime.Genres.Add(new AnimeGenre { Genre = genre, Anime = anime });
                     }
 
                     context.Animes.Add(anime);
