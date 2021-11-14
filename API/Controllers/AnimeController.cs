@@ -37,6 +37,20 @@ namespace AnimeLib.API.Controllers
             return Ok(animes);
         }
 
+        [HttpGet(nameof(GetByFilter))]
+        public IActionResult GetByFilter([FromQuery] FilterArgs args)
+        {
+            if (args.statusIds[0] == -1) args.statusIds = animeService.GetAllStatusIds();
+            if (args.arIds[0] == -1) args.arIds = animeService.GetAllARIds();
+            if (args.from_year == 0) args.from_year = 1900;
+            if (args.to_year == 0) args.to_year = DateTime.Now.Year + 10;
+            if (args.genreIds[0] == -1) args.genreIds = null;
+
+            List<Anime> animes = animeService.GetAnimesByFilter(args.statusIds, args.arIds, args.from_year, args.to_year, args.genreIds);
+
+            return Ok(animes);
+        }
+
         [HttpGet(nameof(GetByTitle) + "/{titlefragment}")]
         public IActionResult GetByTitle(string titlefragment)
         {

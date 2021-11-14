@@ -31,6 +31,44 @@ namespace AnimeLib.Services
             return animes;
         }
 
+        public List<Anime> GetAnimesByFilter(int[] statusIds, int[] arIds, int from_year, int to_year, int[] genreIds)
+        {
+            var animes = context.Animes
+                .Include(s => s.Status)
+                .Include(rs => rs.AgeRestriction)
+                .Include(a => a.Genres)
+                .ThenInclude(a => a.Genre)
+                .Include(arc => arc.Arcs)
+                .ThenInclude(ep => ep.Episodes)
+                .Where(a => statusIds.Contains(a.StatusId))
+                .Where(a => arIds.Contains(a.AgeRestrictionId))
+                .Where(a => a.Year >= from_year && a.Year <= to_year)
+                .ToList();
+
+            if (genreIds != null)
+            {
+                List<Anime> animesToReturn = new List<Anime>();
+
+                foreach (var anime in animes)
+                {
+                    List<int> genres = new List<int>();
+                    foreach (var genre in anime.Genres)
+                    {
+                        genres.Add(genre.GenreId);
+                    }
+
+                    if (!genreIds.Except(genres).Any())
+                    {
+                        animesToReturn.Add(anime);
+                    }
+                }
+
+                return animesToReturn;
+            }
+
+            return animes;   
+        }
+
         public Anime[] GetAnimesByTitle(string title_fragment)
         {
             var animes = context.Animes
@@ -227,12 +265,53 @@ namespace AnimeLib.Services
             return ar.Id;
         }
 
+        public int[] GetAllStatusIds()
+        {
+            var statuses = context.Statuses
+                .ToArray();
+
+            int[] ids = new int[statuses.Length];
+            for (int i = 0; i < statuses.Length; i++)
+            {
+                ids[i] = statuses[i].Id;
+            }
+
+            return ids;
+        }
+
+        public int[] GetAllARIds()
+        {
+            var ars = context.AgeRestrictions
+                .ToArray();
+
+            int[] ids = new int[ars.Length];
+            for (int i = 0; i < ars.Length; i++)
+            {
+                ids[i] = ars[i].Id;
+            }
+
+            return ids;
+        }
+
         public Genre[] GetAllGenres()
         {
             var genres = context.Genres
                 .ToArray();
 
             return genres;
+        }
+
+        public int[] GetAllGenreIds()
+        {
+            var genres = GetAllGenres();
+
+            int[] ids = new int[genres.Length];
+            for (int i = 0; i < genres.Length; i++)
+            {
+                ids[i] = genres[i].Id;
+            }
+
+            return ids;      
         }
 
     }
