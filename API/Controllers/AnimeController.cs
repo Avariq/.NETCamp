@@ -46,7 +46,21 @@ namespace AnimeLib.API.Controllers
             if (args.to_year == 0) args.to_year = DateTime.Now.Year + 10;
             if (args.genreIds[0] == -1) args.genreIds = null;
 
-            List<Anime> animes = animeService.GetAnimesByFilter(args.statusIds, args.arIds, args.from_year, args.to_year, args.genreIds);
+            List<Anime> animesRetrieved = animeService.GetAnimesByFilter(args.statusIds, args.arIds, args.from_year, args.to_year, args.genreIds);
+
+            /*Додати пагінацію, шоб O(n^2) не поламало мені лице*/
+
+            List<Anime> animes = args.orderBy switch
+            {
+                0 => animesRetrieved.OrderBy(a => a.Title).ToList(),
+                1 => animesRetrieved.OrderBy(a => a.Year).ToList(),
+                2 => animesRetrieved.OrderBy(a => a.Rating).ToList(),
+                3 => animesRetrieved.OrderBy(a => a.Votes).ToList(),
+                4 => animesRetrieved.OrderBy(a => a.Views).ToList(),
+                _ => animesRetrieved,
+            };
+
+            if (args.isDescending) animes.Reverse();
 
             return Ok(animes);
         }
