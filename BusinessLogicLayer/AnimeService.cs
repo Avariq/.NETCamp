@@ -31,7 +31,25 @@ namespace AnimeLib.Services
             return animes;
         }
 
-        public List<Anime> GetAnimesByFilter(int[] statusIds, int[] arIds, int from_year, int to_year, int[] genreIds)
+        public Anime[] GetRecent(int pageNumber, int pageSize)
+        {
+            var animes = context.Animes
+                .Include(s => s.Status)
+                .Include(rs => rs.AgeRestriction)
+                .Include(a => a.Genres)
+                .ThenInclude(a => a.Genre)
+                .Include(arc => arc.Arcs)
+                .ThenInclude(ep => ep.Episodes)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .OrderByDescending(a => a.Id)
+                .ToArray();
+
+            return animes;
+        }
+
+        public List<Anime> GetAnimesByFilter(int[] statusIds, int[] arIds, int from_year, 
+                                            int to_year, int[] genreIds, int pageNumber, int pageSize)
         {
             var animes = context.Animes
                 .Include(s => s.Status)
@@ -43,6 +61,8 @@ namespace AnimeLib.Services
                 .Where(a => statusIds.Contains(a.StatusId))
                 .Where(a => arIds.Contains(a.AgeRestrictionId))
                 .Where(a => a.Year >= from_year && a.Year <= to_year)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
                 .ToList();
 
             if (genreIds != null)

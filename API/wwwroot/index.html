@@ -39,13 +39,13 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-            Manager.GetAllAnimes();
+            Manager.GetRecent(1, 8);
         })
 
         var Manager = {
-            GetAllAnimes: function () {
+            GetRecent: function (pageNumber, pageSize) {
                 var obj = "";
-                var sourceUrl = "https://localhost:5001/api/Anime/GetAll";
+                var sourceUrl = "https://localhost:5001/api/Anime/GetRecent?pageNumber=" + pageNumber + "&pageSize=" + pageSize;
                 window.Manager.GetAPI(sourceUrl, onSuccess, onFail);
                 function onSuccess(jsonData) {
                     obj = jsonData;

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace AnimeLib.API.Models
 {
-    public class FilterArgs
+    public sealed class FilterArgs : PageArgs
     {
         public int[] statusIds { get; set; }
         public int[] arIds { get; set; }

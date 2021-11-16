@@ -30,27 +30,31 @@ namespace AnimeLib.API.Controllers
             mapper = _mapper;
         }
 
-        [HttpGet(nameof(GetAll))]
-        public IActionResult GetAll()
+        [HttpGet(nameof(GetRecent))]
+        public IActionResult GetRecent([FromQuery] PageArgs pageArgs)
         {
-            Anime[] animes = animeService.GetAllAnimes();
+            Anime[] animes = animeService.GetRecent(pageArgs.pageNumber, pageArgs.pageSize);
+
             return Ok(animes);
         }
 
         [HttpGet(nameof(GetByFilter))]
-        public IActionResult GetByFilter([FromQuery] FilterArgs args)
+        public IActionResult GetByFilter([FromQuery] FilterArgs filterArgs)
         {
-            if (args.statusIds[0] == -1) args.statusIds = animeService.GetAllStatusIds();
-            if (args.arIds[0] == -1) args.arIds = animeService.GetAllARIds();
-            if (args.from_year == 0) args.from_year = 1900;
-            if (args.to_year == 0) args.to_year = DateTime.Now.Year + 10;
-            if (args.genreIds[0] == -1) args.genreIds = null;
+            if (filterArgs.statusIds[0] == -1) filterArgs.statusIds = animeService.GetAllStatusIds();
+            if (filterArgs.arIds[0] == -1) filterArgs.arIds = animeService.GetAllARIds();
+            if (filterArgs.from_year == 0) filterArgs.from_year = 1900;
+            if (filterArgs.to_year == 0) filterArgs.to_year = DateTime.Now.Year + 10;
+            if (filterArgs.genreIds[0] == -1) filterArgs.genreIds = null;
 
-            List<Anime> animesRetrieved = animeService.GetAnimesByFilter(args.statusIds, args.arIds, args.from_year, args.to_year, args.genreIds);
+            /*Спитати чи норм передавати FilterArgs в контекст БД і вже там розбирати чи крaще купкою розділених аргументів зразу*/
 
-            /*Додати пагінацію, шоб O(n^2) не поламало мені лице*/
+            List<Anime> animesRetrieved = animeService.GetAnimesByFilter(
+                filterArgs.statusIds, filterArgs.arIds, filterArgs.from_year, filterArgs.to_year, filterArgs.genreIds,
+                filterArgs.pageNumber, filterArgs.pageSize
+                );
 
-            List<Anime> animes = args.orderBy switch
+            List<Anime> animes = filterArgs.orderBy switch
             {
                 0 => animesRetrieved.OrderBy(a => a.Title).ToList(),
                 1 => animesRetrieved.OrderBy(a => a.Year).ToList(),
@@ -60,7 +64,7 @@ namespace AnimeLib.API.Controllers
                 _ => animesRetrieved,
             };
 
-            if (args.isDescending) animes.Reverse();
+            if (filterArgs.isDescending) animes.Reverse();
 
             return Ok(animes);
         }
