@@ -144,9 +144,11 @@
         });
 
         var genres = null;
+        var animes = null;
 
         $(document).ready(function () {
             genres = $.getAllGenres();
+            animes = $.getAnimeTitles();
         })
 
         $("#new-anime").click(function () {
@@ -307,7 +309,6 @@
         });
         
 
-        var animes = $.getAnimeTitles();
         var arcs = null;
         $('#arc-anime-title').autocomplete
         ({
@@ -480,8 +481,12 @@
             var animeStatus = $("input:radio[name='status']:checked").val().toString();
             var animeAgeRestriction = $("input:radio[name='ar']:checked").val().toString();
 
-            console.log("here:", animeStatus);
-            console.log("here2:", animeAgeRestriction);
+            if (jQuery.inArray(animeName, animes) !== -1) {
+                console.error("Such anime does already exist.");
+                console.log(animeName);
+                $inputs.prop("disabled", false);
+                return;
+            }
 
             var animeGenres = new Array();
             $.each($("input[name='anime-genre']:checked"), function () {

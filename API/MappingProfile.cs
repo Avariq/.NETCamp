@@ -12,8 +12,8 @@ namespace AnimeLib.API
     {
         public MappingProfile()
         {
-            CreateMap<Anime, AnimeDTO>();
-            CreateMap<AnimeDTO, Anime>();
+            CreateMap<Anime, AnimeDto>();
+            CreateMap<AnimeDto, Anime>();
         }
 
     }

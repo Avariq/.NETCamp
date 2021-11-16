@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AnimeLib.API.Models
 {
-    public class AnimeDTO
+    public class AnimeDto
     {
         public string Title { get; set; }
         public int Year { get; set; }

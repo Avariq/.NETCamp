@@ -8,7 +8,7 @@ namespace AnimeLib.API.Models
 {
     public class AnimeArgs
     {
-        public AnimeDTO Anime { get; set; }
+        public AnimeDto Anime { get; set; }
         public Genre[] Genres { get; set; }
     }
 }

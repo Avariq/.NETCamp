@@ -18,21 +18,18 @@ namespace AnimeLib.Services
             context = _context;
         }
 
-        public Anime[] GetAllAnimes()
+        public int GetAnimeAmount()
         {
-            var animes = context.Animes
-                .Include(s => s.Status)
-                .Include(rs => rs.AgeRestriction)
-                .Include(a => a.Genres)
-                .ThenInclude(a => a.Genre)
-                .Include(arc => arc.Arcs)
-                .ThenInclude(ep => ep.Episodes)
-                .ToArray();
-            return animes;
+            var amount = context.Animes
+                .Count();
+
+            return amount;
         }
 
         public Anime[] GetRecent(int pageNumber, int pageSize)
         {
+            var totalPages = (int)Math.Ceiling((double)(GetAnimeAmount() / pageSize));
+
             var animes = context.Animes
                 .Include(s => s.Status)
                 .Include(rs => rs.AgeRestriction)
@@ -40,7 +37,7 @@ namespace AnimeLib.Services
                 .ThenInclude(a => a.Genre)
                 .Include(arc => arc.Arcs)
                 .ThenInclude(ep => ep.Episodes)
-                .Skip((pageNumber - 1) * pageSize)
+                .Skip((totalPages - pageNumber) * pageSize)
                 .Take(pageSize)
                 .OrderByDescending(a => a.Id)
                 .ToArray();
@@ -67,11 +64,11 @@ namespace AnimeLib.Services
 
             if (genreIds != null)
             {
-                List<Anime> animesToReturn = new List<Anime>();
+                List<Anime> animesToReturn = new();
 
                 foreach (var anime in animes)
                 {
-                    List<int> genres = new List<int>();
+                    List<int> genres = new();
                     foreach (var genre in anime.Genres)
                     {
                         genres.Add(genre.GenreId);

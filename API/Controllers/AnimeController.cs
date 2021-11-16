@@ -1,4 +1,5 @@
 ﻿using AnimeLib.API.Models;
+using AnimeLib.API.Models.Output;
 using AnimeLib.Domain.DataAccess;
 using AnimeLib.Domain.Models;
 using AnimeLib.Services;
@@ -33,9 +34,12 @@ namespace AnimeLib.API.Controllers
         [HttpGet(nameof(GetRecent))]
         public IActionResult GetRecent([FromQuery] PageArgs pageArgs)
         {
-            Anime[] animes = animeService.GetRecent(pageArgs.pageNumber, pageArgs.pageSize);
+            AnimeArgsOut animesOutput = new();
 
-            return Ok(animes);
+            animesOutput.animes = animeService.GetRecent(pageArgs.pageNumber, pageArgs.pageSize);
+            animesOutput.totalAmount = animeService.GetAnimeAmount();
+
+            return Ok(animesOutput);
         }
 
         [HttpGet(nameof(GetByFilter))]

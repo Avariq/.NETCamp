@@ -34,12 +34,30 @@
                 <div id="new" class="tab-content">
                 </div>
             </div>
+            <div id="pagination-block">
+
+            </div>
         </div>
+        
     </div>
 
     <script type="text/javascript">
+
+        var animePerPage = 6;
+
+        jQuery.extend({
+            displayPages: function (pageCount) {
+                for (var i = 0; i < pageCount; i++) {
+                    $("#pagination-block").append('<a href="#">' + (i + 1) + '</a>');
+                }
+            },
+            displayPage: function (pageNumber) {
+                Manager.GetRecent(pageNumber, animePerPage);
+            }
+        });
+
         $(document).ready(function () {
-            Manager.GetRecent(1, 8);
+            Manager.GetRecent(1, animePerPage);
         })
 
         var Manager = {
@@ -50,9 +68,10 @@
                 function onSuccess(jsonData) {
                     obj = jsonData;
                     data = Object.entries(jsonData);
-
-                    for (var i = 0; i < data.length; i++) {
-                        var elem = data[i][1];
+                    var pageCount = Math.ceil(data[1][1] / animePerPage);
+                    $.displayPages(pageCount);
+                    for (var i = 0; i < data[0][1].length; i++) {
+                        var elem = data[0][1][i];
                         var html = '';
                         html += '<div class="preview-block">';
                         html += '<a href="#">';
@@ -111,6 +130,10 @@
                 });
             }
         }
+
+        $(".test").click(function () {
+            console.log(this.textContent);
+        });
 
     </script>
 
