@@ -50,7 +50,7 @@ header::after {
     display: flex;
     width: 100%;
     position: relative;
-    justify-content: space-between;
+    flex-wrap: wrap;
 }
 .content > div {
     flex-grow: 1;
@@ -70,6 +70,9 @@ header::after {
 }
 @media only screen and (max-width: 1555px) {
     .tabs-header {
+        width: 500px;
+    }
+    #search-field-block {
         width: 500px;
     }
 }
@@ -193,4 +196,18 @@ header::after {
 }
 .active-page {
     background-color: #3cce7b;
+}
+#search-field-block {
+    height: 50px;
+    width: 65%;
+    margin-top: 40px;
+    float: right;
+}
+.search-field {
+    width: 65%;
+    height: 100%;
+    margin: auto;
+    background-color: #333;
+    color: white;
+    font-size: 18px;
 }

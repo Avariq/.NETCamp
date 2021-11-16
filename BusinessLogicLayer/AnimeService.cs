@@ -46,7 +46,7 @@ namespace AnimeLib.Services
         }
 
         public List<Anime> GetAnimesByFilter(int[] statusIds, int[] arIds, int from_year, 
-                                            int to_year, int[] genreIds, int pageNumber, int pageSize)
+                                            int to_year, int[] genreIds,string titleFragment, int pageNumber, int pageSize)
         {
             var animes = context.Animes
                 .Include(s => s.Status)
@@ -55,6 +55,7 @@ namespace AnimeLib.Services
                 .ThenInclude(a => a.Genre)
                 .Include(arc => arc.Arcs)
                 .ThenInclude(ep => ep.Episodes)
+                .Where(a => a.Title.Contains(titleFragment))
                 .Where(a => statusIds.Contains(a.StatusId))
                 .Where(a => arIds.Contains(a.AgeRestrictionId))
                 .Where(a => a.Year >= from_year && a.Year <= to_year)
@@ -84,19 +85,6 @@ namespace AnimeLib.Services
             }
 
             return animes;   
-        }
-
-        public Anime[] GetAnimesByTitle(string title_fragment)
-        {
-            var animes = context.Animes
-                .Include(s => s.Status)
-                .Include(restr => restr.AgeRestriction)
-                .Include(g => g.Genres)
-                .Include(arc => arc.Arcs)
-                .ThenInclude(ep => ep.Episodes)
-                .Where(a => a.Title.Contains(title_fragment))
-                .ToArray();
-            return animes;
         }
 
         public int GetAnimeId(string title)

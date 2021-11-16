@@ -23,6 +23,12 @@
     </header>
 
     <div class="content">
+        <div id="search-field-block">
+            <input id="search" autocomplete="off" class="search-field" type="text" name="word" placeholder="Find anime by title" />
+        </div>
+        <div id="filter-block">
+
+        </div>
         <div class="tabs-block">
             <div class="tabs-header">
                 <ul class="tabs">
@@ -131,9 +137,19 @@
             }
         }
 
-        $(".test").click(function () {
-            console.log(this.textContent);
-        });
+        $("#search").bind("keypress", {}, keypressInBox);
+
+        function keypressInBox(e) {
+            var code = (e.keyCode ? e.keyCode : e.which);
+            if (code == 13) {
+                e.preventDefault();
+
+                var input = $("#search").val();
+                var url = '?titlefragment=' + input;
+
+                window.location.href = 'https://localhost:5001/HTML/Search.html' + url;
+            }
+        };
 
     </script>
 

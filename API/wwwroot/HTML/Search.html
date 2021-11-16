@@ -1,0 +1,68 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" charset="utf-8" />
+    <title>AnimeLib</title>
+    <link href="../CSS/main.css" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Kurenaido&display=swap" rel="stylesheet">
+    <script src="../JS/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <ul class="menu">
+                <li><a class="admin-page" href="HTML/AdminPage.html"> Admin page </a></li>
+                <li><a href="../index.html"> Main page </a></li>
+                <li><a href="#">Catalogue</a></li>
+                <li><a href="#">TOP-100</a></li>
+                <li><a href="#">Random Anime</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <script type="text/javascript">
+        $.extend({
+            getByFilter: function (titlefragment) {
+                var animesByTitle = null;
+                $.ajax({
+                    type: "GET",
+                    url: "https://localhost:5001/api/Anime/GetByFilter?statusIds=-1&arIds=-1&genreIds=-1&titleFragment=" + titlefragment + "&orderBy=1&isDescending=true",
+                    dataType: "json",
+                    async: false,
+                    success: function (data) {
+                        animesByTitle = data;
+                    },
+                    error: function (errorThrown) {
+                        alert(errorThrown);
+                    }
+                });
+                return animesByTitle;
+            },
+            getUrlVars: function () {
+                var vars = [], hash;
+                var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+                for (var i = 0; i < hashes.length; i++) {
+                    hash = hashes[i].split('=');
+                    vars.push(hash[0]);
+                    vars[hash[0]] = hash[1];
+                }
+                return vars;
+            }
+        });
+
+        $(document).ready(function () {
+            var vars = $.getUrlVars();
+            var titlefragment = vars["titlefragment"];
+            var animes = $.getByFilter(titlefragment);
+            console.log(animes);
+        })
+
+    </script>
+
+</body >
+</html >

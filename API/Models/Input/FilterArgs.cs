@@ -12,6 +12,7 @@ namespace AnimeLib.API.Models
         public int from_year { get; set; }
         public int to_year { get; set; }
         public int[] genreIds { get; set; }
+        public string titleFragment { get; set; }
         public int orderBy { get; set; }
         public bool isDescending { get; set; }
     }

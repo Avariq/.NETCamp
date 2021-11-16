@@ -55,7 +55,7 @@ namespace AnimeLib.API.Controllers
 
             List<Anime> animesRetrieved = animeService.GetAnimesByFilter(
                 filterArgs.statusIds, filterArgs.arIds, filterArgs.from_year, filterArgs.to_year, filterArgs.genreIds,
-                filterArgs.pageNumber, filterArgs.pageSize
+                filterArgs.titleFragment, filterArgs.pageNumber, filterArgs.pageSize
                 );
 
             List<Anime> animes = filterArgs.orderBy switch
@@ -70,17 +70,6 @@ namespace AnimeLib.API.Controllers
 
             if (filterArgs.isDescending) animes.Reverse();
 
-            return Ok(animes);
-        }
-
-        [HttpGet(nameof(GetByTitle) + "/{titlefragment}")]
-        public IActionResult GetByTitle(string titlefragment)
-        {
-            Anime[] animes = animeService.GetAnimesByTitle(titlefragment);
-            if (animes.Length < 1)
-            {
-                return NoContent();
-            }
             return Ok(animes);
         }
 
