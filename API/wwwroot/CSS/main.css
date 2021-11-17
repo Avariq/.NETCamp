@@ -204,7 +204,8 @@ header::after {
     float: right;
 }
 .search-field {
-    width: 65%;
+    max-width: 65%;
+    min-width: 500px;
     height: 100%;
     margin: auto;
     background-color: #333;

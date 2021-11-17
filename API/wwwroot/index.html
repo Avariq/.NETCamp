@@ -54,16 +54,28 @@
         jQuery.extend({
             displayPages: function (pageCount) {
                 for (var i = 0; i < pageCount; i++) {
-                    $("#pagination-block").append('<a href="#">' + (i + 1) + '</a>');
+                    $("#pagination-block").append('<a href="?page='+ (i+1) +'">' + (i + 1) + '</a>');
                 }
             },
-            displayPage: function (pageNumber) {
+            getUrlVars: function () {
+                var vars = [], hash;
+                var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+                for (var i = 0; i < hashes.length; i++) {
+                    hash = hashes[i].split('=');
+                    vars.push(hash[0]);
+                    vars[hash[0]] = hash[1];
+                }
+                return vars;
+            },
+            displayPage: function () {
+                var vars = $.getUrlVars();
+                var pageNumber = vars["page"];
                 Manager.GetRecent(pageNumber, animePerPage);
             }
         });
 
         $(document).ready(function () {
-            Manager.GetRecent(1, animePerPage);
+            $.displayPage(1, animePerPage);
         })
 
         var Manager = {
