@@ -55,7 +55,7 @@ namespace AnimeLib.Services
                 .ThenInclude(a => a.Genre)
                 .Include(arc => arc.Arcs)
                 .ThenInclude(ep => ep.Episodes)
-                .Where(a => a.Title.Contains(titleFragment))
+                .Where(a => titleFragment == null ? true : a.Title.Contains(titleFragment))
                 .Where(a => statusIds.Contains(a.StatusId))
                 .Where(a => arIds.Contains(a.AgeRestrictionId))
                 .Where(a => a.Year >= from_year && a.Year <= to_year)

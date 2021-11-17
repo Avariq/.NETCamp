@@ -51,6 +51,7 @@ header::after {
     width: 100%;
     position: relative;
     flex-wrap: wrap;
+    flex-direction: column;
 }
 .content > div {
     flex-grow: 1;
@@ -63,7 +64,7 @@ header::after {
     height: 48px;
     width: 100%;
     display: flex;
-    margin-top: 200px;
+    margin-top: 100px;
     background-color: #3a3a3a;
     border-bottom: solid 3px;
     border-bottom-color: #e64242;
@@ -211,4 +212,33 @@ header::after {
     background-color: #333;
     color: white;
     font-size: 18px;
+}
+#filter-block {
+    max-width: 300px;
+    height: 400px;
+    background-color: #222;
+    margin-left: 90px;
+    border: solid 3px #e64242;
+}
+#filter-block label {
+    color: white;
+    float: left;
+    margin-right: 10px;
+}
+#filter-block input[type=submit] {
+    background-color: #333;
+    color: white;
+    font-size: 16px;
+    width: 200px;
+    margin-top: 10px;
+}
+#status-multichoice {
+    width: 130px;
+    float: right;
+}
+#ar-multichoice {
+    width: 130px;
+}
+#genre-multichoice {
+    width: 130px;
 }

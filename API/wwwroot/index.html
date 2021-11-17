@@ -8,6 +8,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Zen+Kurenaido&display=swap" rel="stylesheet">
     <script src="JS/jquery-3.6.0.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="JS/global.js"></script>
 </head>
 <body>
     <header class="header">
@@ -27,7 +30,26 @@
             <input id="search" autocomplete="off" class="search-field" type="text" name="word" placeholder="Find anime by title" />
         </div>
         <div id="filter-block">
+            <form id="filter-form">
+                <label for="statuses[]">Statuses</label>
+                <select name="statuses[]" id="status-multichoice" multiple="multiple">
+                    <option value="Ongoing">Ongoing</option>
+                    <option value="Released">Released</option>
+                    <option value="Announced">Announced</option>
+                </select>
+                <label for="ars[]">Age Restrictions</label>
+                <select name="ars[]" id="ar-multichoice" multiple="multiple">
+                    <option value="G">G</option>
+                    <option value="PG12">PG12</option>
+                    <option value="R15">R15</option>
+                    <option value="R18">R18</option>
+                </select>
+                <label for="genres[]">Genres</label>
+                <select name="genres[]" id="genre-multichoice" multiple="multiple">
+                </select>
 
+                <input type="submit" name="submit" value="Submit" />
+            </form>
         </div>
         <div class="tabs-block">
             <div class="tabs-header">
@@ -50,6 +72,7 @@
     <script type="text/javascript">
 
         var animePerPage = 6;
+        var genres = null;
 
         jQuery.extend({
             displayPages: function (pageCount) {
@@ -76,7 +99,12 @@
 
         $(document).ready(function () {
             $.displayPage(1, animePerPage);
-        })
+            genres = $.getAllGenres();
+            InjectGenres();
+            $("#status-multichoice").select2();
+            $("#ar-multichoice").select2();
+            $("#genre-multichoice").select2();
+        });
 
         var Manager = {
             GetRecent: function (pageNumber, pageSize) {
@@ -162,6 +190,50 @@
                 window.location.href = 'https://localhost:5001/HTML/Search.html' + url;
             }
         };
+
+        function InjectGenres() {
+            for (var i = 0; i < genres.length; i++) {
+                genre = genres[i];
+                console.log(genre);
+                var newOption = '<option value="' + genre.id + '">' + genre.name + '</option>';
+                $("#genre-multichoice").append(newOption);
+            }
+        }
+
+        $("#filter-form").submit(function (event) {
+            event.preventDefault();
+            var statusInput = $("#status-multichoice").val();
+            var statuses = '';
+            for (var i = 0; i < statusInput.length; i++) {
+                statuses += 'statusIds=' + $.getStatusId(statusInput[i]);
+                if (i + 1 >= statusInput.length) {
+                    break;
+                }
+                statuses += '&';
+            }
+            var arsInput = $("#ar-multichoice").val();
+            var ars = '';
+            for (var i = 0; i < arsInput.length; i++) {
+                ars += 'arIds=' + $.getAgeRestrictionId(arsInput[i]);
+                if (i + 1 >= arsInput.length) {
+                    break;
+                }
+                ars += '&';
+            }
+            var genresInput = $("#genre-multichoice").val();
+            var genres = '';
+            for (var i = 0; i < genresInput.length; i++) {
+                genres += 'genreIds=' + genresInput[i];
+                if (i + 1 >= genresInput.length) {
+                    break;
+                }
+                genres += '&';
+            }
+
+
+            var url = '?' + statuses + '&' + ars + '&' + genres;
+            console.log(url);
+        });
 
     </script>
 
