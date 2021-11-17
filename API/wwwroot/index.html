@@ -31,24 +31,44 @@
         </div>
         <div id="filter-block">
             <form id="filter-form">
-                <label for="statuses[]">Statuses</label>
-                <select name="statuses[]" id="status-multichoice" multiple="multiple">
-                    <option value="Ongoing">Ongoing</option>
-                    <option value="Released">Released</option>
-                    <option value="Announced">Announced</option>
-                </select>
-                <label for="ars[]">Age Restrictions</label>
-                <select name="ars[]" id="ar-multichoice" multiple="multiple">
-                    <option value="G">G</option>
-                    <option value="PG12">PG12</option>
-                    <option value="R15">R15</option>
-                    <option value="R18">R18</option>
-                </select>
-                <label for="genres[]">Genres</label>
-                <select name="genres[]" id="genre-multichoice" multiple="multiple">
-                </select>
+                <div class="filter-section">
+                    <label for="statuses[]">Statuses</label>
+                    <select name="statuses[]" id="status-multichoice" multiple="multiple">
+                        <option value="Ongoing">Ongoing</option>
+                        <option value="Released">Released</option>
+                        <option value="Announced">Announced</option>
+                    </select>
+                    <label for="ars[]">Age Restrictions</label>
+                    <select name="ars[]" id="ar-multichoice" multiple="multiple">
+                        <option value="G">G</option>
+                        <option value="PG12">PG12</option>
+                        <option value="R15">R15</option>
+                        <option value="R18">R18</option>
+                    </select>
+                    <label for="genres[]">Genres</label>
+                    <select name="genres[]" id="genre-multichoice" multiple="multiple">
+                    </select>
+                    <label for="filter_year_from">From year</label>
+                    <input id="filter_year_from" type="text" name="year_from" placeholder="yyyy" />
+                    <label for="filter_year_to">To year</label>
+                    <input id="filter_year_to" type="text" name="year_to" placeholder="yyyy" />
+                    <label for="orderBy">Order by</label>
+                    <select name="orderBy" id="order-choice">
+                        <option value="-1">No order</option>
+                        <option value="0">title</option>
+                        <option value="1">year</option>
+                        <option value="2">rating</option>
+                        <option value="3">votes</option>
+                        <option value="4">views</option>
+                    </select>
+                    <label for="isDescending">Sort by</label>
+                    <select name="isDescending" id="isDescending">
+                        <option value="false">Ascending</option>
+                        <option value="true">Descending</option>
+                    </select>
 
-                <input type="submit" name="submit" value="Submit" />
+                    <input type="submit" name="submit" value="Submit" />
+                </div>
             </form>
         </div>
         <div class="tabs-block">
@@ -104,6 +124,8 @@
             $("#status-multichoice").select2();
             $("#ar-multichoice").select2();
             $("#genre-multichoice").select2();
+            $("#order-choice").select2();
+            $("#isDescending").select2();
         });
 
         var Manager = {
@@ -194,7 +216,6 @@
         function InjectGenres() {
             for (var i = 0; i < genres.length; i++) {
                 genre = genres[i];
-                console.log(genre);
                 var newOption = '<option value="' + genre.id + '">' + genre.name + '</option>';
                 $("#genre-multichoice").append(newOption);
             }
@@ -229,10 +250,14 @@
                 }
                 genres += '&';
             }
+            var fromYear = 'from_year=' + $("#filter_year_from").val();
+            var toYear = 'to_year=' + $("#filter_year_to").val();
+            var titleFragment = 'titleFragment=' + $("#search").val();
+            var orderBy = 'orderBy=' + $("#order-choice").val();
+            var isDescending = 'isDescending=' + $("#isDescending").val();
 
-
-            var url = '?' + statuses + '&' + ars + '&' + genres;
-            console.log(url);
+            var url = '?' + statuses + '&' + ars + '&' + genres + '&' + fromYear + '&' + toYear + '&' + titleFragment + '&' + orderBy + '&' + isDescending;
+            window.location.href = 'https://localhost:5001/HTML/Search.html' + url;
         });
 
     </script>

@@ -7,7 +7,6 @@
             dataType: 'json',
             async: false,
             success: function (data) {
-                console.log("retrieved data:", data);
                 id = data;
             },
             error: function (errorThrown) {

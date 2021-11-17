@@ -215,7 +215,7 @@ header::after {
 }
 #filter-block {
     max-width: 300px;
-    height: 400px;
+    height: 500px;
     background-color: #222;
     margin-left: 90px;
     border: solid 3px #e64242;
@@ -232,13 +232,7 @@ header::after {
     width: 200px;
     margin-top: 10px;
 }
-#status-multichoice {
-    width: 130px;
-    float: right;
-}
-#ar-multichoice {
-    width: 130px;
-}
-#genre-multichoice {
-    width: 130px;
+.filter-section {
+    display: flex;
+    flex-direction: column;
 }
