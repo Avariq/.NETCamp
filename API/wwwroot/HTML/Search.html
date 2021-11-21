@@ -27,11 +27,11 @@
 
     <script type="text/javascript">
         $.extend({
-            getByFilter: function (titlefragment) {
+            getByFilter: function (filterUrl) {
                 var animesByTitle = null;
                 $.ajax({
                     type: "GET",
-                    url: "https://localhost:5001/api/Anime/GetByFilter?statusIds=-1&arIds=-1&genreIds=-1&titleFragment=" + titlefragment + "&orderBy=1&isDescending=true",
+                    url: filterUrl,
                     dataType: "json",
                     async: false,
                     success: function (data) {
@@ -69,8 +69,15 @@
             var vars = $.getUrlVars();
             console.log(vars);
             var titlefragment = vars["titlefragment"];
-            var statuses = vars["statusIds"];
-            console.log(statuses);
+            var statusIds = vars["statusIds"];
+            for (var i = 0; i < statusIds.length; i++) {
+                statusIds[i] = parseInt(statusIds[i]);
+            }
+            var arIds = vars["arIds"];
+            for (var i = 0; i < arIds.length; i++) {
+                arIds[i] = parseInt(arIds[i]);
+            }
+
         }
 
     </script>

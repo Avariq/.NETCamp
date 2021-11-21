@@ -45,8 +45,7 @@ namespace AnimeLib.Services
             return animes;
         }
 
-        public List<Anime> GetAnimesByFilter(int[] statusIds, int[] arIds, int from_year, 
-                                            int to_year, int[] genreIds,string titleFragment, int pageNumber, int pageSize)
+        public IQueryable<Anime> GetAllAnimesQueryable()
         {
             var animes = context.Animes
                 .Include(s => s.Status)
@@ -54,35 +53,18 @@ namespace AnimeLib.Services
                 .Include(a => a.Genres)
                 .ThenInclude(a => a.Genre)
                 .Include(arc => arc.Arcs)
-                .ThenInclude(ep => ep.Episodes)
-                .Where(a => titleFragment == null ? true : a.Title.Contains(titleFragment))
-                .Where(a => statusIds.Contains(a.StatusId))
-                .Where(a => arIds.Contains(a.AgeRestrictionId))
-                .Where(a => a.Year >= from_year && a.Year <= to_year)
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .ToList();
+                .ThenInclude(ep => ep.Episodes);
 
-            if (genreIds != null)
+            foreach (var anime in animes)
             {
-                List<Anime> animesToReturn = new();
-
-                foreach (var anime in animes)
+                foreach (var genre in anime.Genres)
                 {
-                    List<int> genres = new();
-                    foreach (var genre in anime.Genres)
-                    {
-                        genres.Add(genre.GenreId);
-                    }
-
-                    if (!genreIds.Except(genres).Any())
-                    {
-                        animesToReturn.Add(anime);
-                    }
+                    genre.Genre.Animes = null;
                 }
-
-                return animesToReturn;
             }
+
+            /*string.IsNullOrWhiteSpace(stringnem)*/
+            /*int.HasValue*/
 
             return animes;   
         }
@@ -164,10 +146,6 @@ namespace AnimeLib.Services
             {
                 try
                 {
-                    /*Genre genre = context.Genres
-                        .Where(g => g.Id.Equals(1)) З цією штукою заводиться, хоча вона ідентична до того. шо я з фронта передаю
-                        .First();*/
-
                     anime.Genres = new List<AnimeGenre>();
                     for (int i = 0; i < genres.Length; ++i)
                     {
@@ -324,3 +302,67 @@ namespace AnimeLib.Services
 
 
 
+/*int page = 1;
+int toSkip = 10 * (page - 1);
+int toTake = 10;
+
+FilterCliteria[] filters = new FilterCliteria[]
+{
+		//new FilterCliteria{Name = "min", TypeName="int", Value="100"},
+		//new FilterCliteria{Name = "max", TypeName="int", Value="105"},
+		new FilterCliteria{Name = "contains", TypeName="string", Value="3"}
+};
+
+//--------------
+
+IEnumerable<int> seq = Enumerable.Range(1, 100000);
+IEnumerable<string> data = seq.Select(x => $"{x}").ToArray();
+//--------------
+IEnumerable<string> result = data;
+
+var appliedMin = filters.SingleOrDefault(x => x.Name == "min");
+var appliedMax = filters.SingleOrDefault(x => x.Name == "max");
+var appliedContains = filters.SingleOrDefault(x => x.Name == "contains");
+
+if (appliedMin != null)
+    result = result.ApplyMin(appliedMin);
+
+if (appliedMax != null)
+    result = result.ApplyMax(appliedMax);
+
+if (appliedContains != null)
+    result = result.ApplyContainsText(appliedContains);
+
+
+result = result.Skip(toSkip).Take(toTake);
+result.Dump();
+}
+
+static class Filtermanager
+{
+    public static IEnumerable<string> ApplyMin(this IEnumerable<string> data, FilterCliteria filter)
+    {
+        int value = int.Parse(filter.Value);
+        return data.Where(x => int.Parse(x) >= value);
+    }
+
+    public static IEnumerable<string> ApplyMax(this IEnumerable<string> data, FilterCliteria filter)
+    {
+        int value = int.Parse(filter.Value);
+        return data.Where(x => int.Parse(x) <= value);
+    }
+
+    public static IEnumerable<string> ApplyContainsText(this IEnumerable<string> data, FilterCliteria filter)
+    {
+        string value = filter.Value;
+        return data.Where(x => x.Contains(value));
+    }
+}
+
+class FilterCliteria
+{
+    public string Name { get; set; }
+    public string TypeName { get; set; }
+    public string Value { get; set; }
+    public string PropertyName { get; set; }
+}*/

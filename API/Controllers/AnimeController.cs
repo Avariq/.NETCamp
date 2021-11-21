@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 /*    async Task<ActionResult> + Exception handling    */
@@ -42,35 +43,24 @@ namespace AnimeLib.API.Controllers
             return Ok(animesOutput);
         }
 
-        [HttpGet(nameof(GetByFilter))]
-        public IActionResult GetByFilter([FromQuery] FilterArgs filterArgs)
+        [HttpPost(nameof(GetByFilter))]
+        public IActionResult GetByFilter([FromBody] FilterBody[] filters)
         {
-            if (filterArgs.statusIds[0] == -1) filterArgs.statusIds = animeService.GetAllStatusIds();
-            if (filterArgs.arIds[0] == -1) filterArgs.arIds = animeService.GetAllARIds();
-            if (filterArgs.from_year == 0) filterArgs.from_year = 1900;
-            if (filterArgs.to_year == 0) filterArgs.to_year = DateTime.Now.Year + 10;
-            if (filterArgs.genreIds[0] == -1) filterArgs.genreIds = null;
+            IQueryable<Anime> animeData = animeService.GetAllAnimesQueryable();
 
-            /*Спитати чи норм передавати FilterArgs в контекст БД і вже там розбирати чи крaще купкою розділених аргументів зразу*/
-
-            List<Anime> animesRetrieved = animeService.GetAnimesByFilter(
-                filterArgs.statusIds, filterArgs.arIds, filterArgs.from_year, filterArgs.to_year, filterArgs.genreIds,
-                filterArgs.titleFragment, filterArgs.pageNumber, filterArgs.pageSize
-                );
-
-            List<Anime> animes = filterArgs.orderBy switch
+            foreach (var filter in filters)
             {
-                0 => animesRetrieved.OrderBy(a => a.Title).ToList(),
-                1 => animesRetrieved.OrderBy(a => a.Year).ToList(),
-                2 => animesRetrieved.OrderBy(a => a.Rating).ToList(),
-                3 => animesRetrieved.OrderBy(a => a.Votes).ToList(),
-                4 => animesRetrieved.OrderBy(a => a.Views).ToList(),
-                _ => animesRetrieved,
-            };
+                object[] arguments = { animeData, filter };
+                string filterMethod = "Apply" + filter.Name;
 
-            if (filterArgs.isDescending) animes.Reverse();
+                Type type = typeof(FilterManager);
+                MethodInfo methodInfo = type.GetMethod(filterMethod);
 
-            return Ok(animes);
+                animeData = (IQueryable<Anime>)methodInfo.Invoke(filterMethod, arguments);
+            }
+            
+
+            return Ok(animeData.ToArray());
         }
 
         [HttpGet(nameof(GetAnimeIdByTitle) + "/{title}")]
