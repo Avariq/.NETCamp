@@ -133,12 +133,13 @@
 
             for (var i = 0; i < foundTotal; i++) {
                 var elem = animes[i];
+                console.log(elem);
                 var html = '';
                 html += '<div class="preview-block">';
-                html += '<a href="#">';
+                html += '<a href="https://localhost:5001/HTML/Anime.html?Id=' + elem.id + '">';
                 html += '<img class="preview-img" src="../' + elem.image + '" alt=""/></a>';
                 html += '<div class="preview-info-block">';
-                html += '<a href="#" class="preview-title">' + elem.title + '</a>'
+                html += '<a href="https://localhost:5001/HTML/Anime.html?Id=' + elem.id + '" class="preview-title">' + elem.title + '</a>'
 
                 html += '<div>';
                 var rating = elem.rating;

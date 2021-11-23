@@ -133,6 +133,7 @@ namespace AnimeLib.Services
                 .Include(s => s.Status)
                 .Include(restr => restr.AgeRestriction)
                 .Include(g => g.Genres)
+                .ThenInclude(g => g.Genre)
                 .Include(arc => arc.Arcs)
                 .ThenInclude(ep => ep.Episodes)
                 .First();

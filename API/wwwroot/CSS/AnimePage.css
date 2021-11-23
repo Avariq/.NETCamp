@@ -1,0 +1,171 @@
+﻿* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Zen Kurenaido', sans-serif;
+}
+body {
+    background-color: #222;
+    width: 100%;
+}
+.header {
+    background-color: #222;
+    border-top: 3px solid;
+    border-top-color: #3a3a3a;
+    border-bottom: 3px solid;
+    border-bottom-color: #3a3a3a;
+}
+header::after {
+    content: '';
+    display: table;
+    clear: both;
+}
+.container {
+    width: 100%;
+    max-width: 1300px;
+    margin: 0 auto;
+}
+.menu {
+    float: right;
+    list-style: none;
+}
+.menu>li {
+    display: inline-block;
+    float: left;
+    font-size: 20px;
+    position: relative;
+    padding: 12px 15px;
+}
+.menu a {
+    text-decoration: none;
+    color: white;
+    text-transform: uppercase;
+}
+.menu li:hover {
+    background-color: #3a3a3a;
+    transition-duration: 0.3s;
+    cursor: pointer;
+}
+.content {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    justify-content: center;
+}
+.anime-block {
+    width: 80%;
+    background-color: #3a3a3a;
+    margin: 0 auto;
+}
+#anime-image {
+    height: 300px;
+    width: 200px;
+    float: right;
+}
+h1 {
+    color: white;
+    margin-left: 10px;
+    float: left;
+}
+.rating-info {
+    display: inline-flex;
+    border-bottom: 2px solid #222;
+}
+.rating-info p {
+    color: white;
+    font-size: 18px;
+    margin-left: 10px;
+    float: left;
+}
+#content-main-info {
+    list-style: none;
+    color: white;
+    font-size: 18px;
+    margin-left: 10px;
+    margin-top: 10px;
+}
+#content-desc-text {
+    border-top: 2px solid #222;
+    color: white;
+    font-size: 18px;
+    margin-left: 10px;
+    margin-top: 20px;
+    max-width: 50%;
+}
+.spoiler-block {
+    width: 80%;
+    background-color: #2c2c2c;
+    margin-top: 40px;
+    margin-left: 10px;
+    margin-bottom: 10px;
+}
+#spoiler-title {
+    background-color: #222;
+    border-bottom: 3px solid #3cce7b;
+    cursor: pointer;
+    padding: 5px 10px;
+    color: white;
+    font-size: 18px;
+}
+#spoiler-content {
+    display: none;
+}
+.spoiler-title {
+    color: white;
+    padding: 5px 10px;
+    cursor: pointer;
+    background-color: #222;
+    border-bottom: 3px solid #3cce7b;
+    font-size: 18px;
+    margin: 10px 0px;
+}
+.spoiler-content > p {
+    color: white;
+    font-size: 15px;
+    margin-left: 10px;
+}
+#genres {
+    max-width: 500px;
+}
+#genres p {
+    display: inline-block;
+    margin-right: 5px;
+    color: #e64242;
+}
+.main-rating {
+    margin-left: 10px;
+    color: #fff;
+    font-size: 18px;
+    background-color: #f2b800;
+    padding: 0 5px;
+    border-radius: 3px;
+    font-weight: 600;
+    cursor: pointer;
+}
+.released {
+    background-color: #3cce7b;
+    border-radius: 10px;
+    min-width: 21px;
+    min-height: 18px;
+    padding: 1px 4px;
+    margin-left: 5px;
+    font-weight: 600;
+}
+.ongoing {
+    background-color: #9954d8;
+    border-radius: 10px;
+    min-width: 21px;
+    min-height: 18px;
+    padding: 1px 4px;
+    margin-left: 5px;
+    font-weight: 600;
+}
+.announced {
+    background-color: #e64242;
+    border-radius: 10px;
+    min-width: 21px;
+    min-height: 18px;
+    padding: 1px 4px;
+    margin-left: 5px;
+    font-weight: 600;
+}

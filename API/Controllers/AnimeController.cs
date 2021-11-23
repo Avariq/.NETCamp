@@ -79,8 +79,8 @@ namespace AnimeLib.API.Controllers
             return Ok(titles);
         }
 
-        [HttpGet(nameof(GetAnimeById) + "/{animeId}")]
-        public IActionResult GetAnimeById(int animeId)
+        [HttpGet(nameof(GetAnimeById))]
+        public IActionResult GetAnimeById([FromQuery] int animeId)
         {
             Anime anime = animeService.GetAnimeById(animeId);
 
