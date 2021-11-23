@@ -23,26 +23,27 @@
                 <li><a href="#">Random Anime</a></li>
             </ul>
         </div>
+        <div class="content">
+            <div class="tabs-block">
+                <div class="tabs-header">
+                    <ul class="tabs">
+                        <li id="search-result"></li>
+                    </ul>
+                </div>
+
+                <div class="tabs-content">
+                    <div id="new" class="tab-content">
+                    </div>
+                </div>
+                <div id="pagination-block">
+
+                </div>
+            </div>
+        </div>
     </header>
 
     <script type="text/javascript">
         $.extend({
-            getByFilter: function (filterUrl) {
-                var animesByTitle = null;
-                $.ajax({
-                    type: "GET",
-                    url: filterUrl,
-                    dataType: "json",
-                    async: false,
-                    success: function (data) {
-                        animesByTitle = data;
-                    },
-                    error: function (errorThrown) {
-                        alert(errorThrown);
-                    }
-                });
-                return animesByTitle;
-            },
             getUrlVars: function () {
                 var vars = [], hash;
                 var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
@@ -61,24 +62,148 @@
             }
         });
 
-        $(document).ready(function () {
-            RetrieveAnimes();
-        })
-
-        function RetrieveAnimes() {
+        function ConstructFilters() {
+            var filters = []
+            function filterBody(name, tname, values, pname) {
+                this.Name = name;
+                this.TypeName = tname;
+                this.Values = values;
+                this.PropertyName = pname;
+            }
             var vars = $.getUrlVars();
             console.log(vars);
-            var titlefragment = vars["titlefragment"];
+            var titlefragment = vars["titleFragment"];
             var statusIds = vars["statusIds"];
-            for (var i = 0; i < statusIds.length; i++) {
-                statusIds[i] = parseInt(statusIds[i]);
+            var yearFrom = vars["from_year"];
+            var yearTo = vars["to_year"];
+            var genreIds = vars["genreIds"];
+            var isDescending = vars["isDescending"];
+            var orderBy = vars["orderBy"];
+            if (statusIds) {
+                for (var i = 0; i < statusIds.length; i++) {
+                    statusIds[i] = parseInt(statusIds[i]);
+                }
+                var StatusFilter = new filterBody("HasStatus", "string", statusIds, "Status");
+                filters.push(StatusFilter);
             }
             var arIds = vars["arIds"];
-            for (var i = 0; i < arIds.length; i++) {
-                arIds[i] = parseInt(arIds[i]);
+            if (arIds) {
+                for (var i = 0; i < arIds.length; i++) {
+                    arIds[i] = parseInt(arIds[i]);
+                }
+                var ARFilter = new filterBody("HasAgeRestriction", "string", arIds, "AgeRestriction");
+                filters.push(ARFilter);
             }
-
+            if (titlefragment) {
+                {
+                    var TitleContainsTextFilter = new filterBody("TitleContainsText", "string", titlefragment, "Title");
+                    filters.push(TitleContainsTextFilter);
+                }
+            }
+            if (yearFrom) {
+                var YearSpanFromFilter = new filterBody("YearSpanFrom", "string", yearFrom, "Year");
+                filters.push(YearSpanFromFilter);
+            }
+            if (yearTo) {
+                var YearSpanToFilter = new filterBody("YearSpanTo", "string", yearTo, "Year");
+                filters.push(YearSpanToFilter);
+            }
+            if (genreIds) {
+                var HasGenresFilter = new filterBody("HasGenres", "string", genreIds, "Genres");
+                filters.push(HasGenresFilter);
+            }
+            if (!isDescending) {
+                if (orderBy) {
+                    var OrderAscendingFilter = new filterBody("OrderAscending", "string", '', orderBy[0]);
+                    filters.push(OrderAscendingFilter);
+                }
+            }
+            else {
+                if (orderBy) {
+                    var OrderDescendingFilter = new filterBody("OrderDescending", "string", '', orderBy[0]);
+                    filters.push(OrderDescendingFilter);
+                }
+            }
+            return filters;
         }
+
+        function displaySearchResults(animes) {
+            var foundTotal = animes.length;
+            $("#search-result").text(foundTotal + " Animes found");
+
+            for (var i = 0; i < foundTotal; i++) {
+                var elem = animes[i];
+                var html = '';
+                html += '<div class="preview-block">';
+                html += '<a href="#">';
+                html += '<img class="preview-img" src="../' + elem.image + '" alt=""/></a>';
+                html += '<div class="preview-info-block">';
+                html += '<a href="#" class="preview-title">' + elem.title + '</a>'
+
+                html += '<div>';
+                var rating = elem.rating;
+                html += '<span class="main-rating">' + rating + '</span>';
+                html += '<span class="main-rating-info">' + elem.votes + ' total votes</span>';
+                html += '</div>'
+
+                html += '<ul class="content-main-info"><li>';
+                if (elem.year) {
+                    html += elem.year + ' | ';
+                }
+                html += elem.status.statusName;
+                html += ' | Episodes: ';
+                if (elem.episodes) {
+                    html += elem.episodes;
+                }
+                else {
+                    html += '1+';
+                }
+                html += '</li>';
+                if (elem.genres.length > 0) {
+                    html += '<li class="categories-list">';
+                    html += '<span>Genres:</span>';
+                    html += '<ul>'
+                    elem.genres.forEach(function (cat) {
+                        html += '<li>' + cat.genre.name + '</li>';
+                    })
+                    html += '</ul>';
+                }
+                html += '<li class="ageRestr"><span>Age Restriction:</span>' + elem.ageRestriction.restrictionCode + ' (' + elem.ageRestriction.ageRequired + '+)' + '</li>';
+                html += '</ul></div></div>';
+                $("#new").append(html);
+            }
+        }
+
+        var animesToDisplay = null;
+
+        $(document).ready(function () {
+            var filters = ConstructFilters();
+            console.log("Filters", filters);
+            var request = $.ajax({
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                url: "https://localhost:5001/api/Anime/GetByFilter",
+                type: "post",
+                dataType: "json",
+                async: false,
+                data: JSON.stringify(filters)
+            });
+            request.done(function (response, textStatus, jqXHR) {
+                animesToDisplay = response;
+            });
+
+            request.fail(function (jqXHR, textStatus, errorThrown) {
+                console.error(
+                    "The following error occurred: " +
+                    textStatus, errorThrown
+                );
+            });
+
+            displaySearchResults(animesToDisplay);
+            
+        })
 
     </script>
 

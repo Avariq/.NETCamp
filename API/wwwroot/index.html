@@ -54,12 +54,12 @@
                     <input id="filter_year_to" type="text" name="year_to" placeholder="yyyy" />
                     <label for="orderBy">Order by</label>
                     <select name="orderBy" id="order-choice">
-                        <option value="-1">No order</option>
-                        <option value="0">title</option>
-                        <option value="1">year</option>
-                        <option value="2">rating</option>
-                        <option value="3">votes</option>
-                        <option value="4">views</option>
+                        <option value="">No order</option>
+                        <option value="Title">title</option>
+                        <option value="Year">year</option>
+                        <option value="Rating">rating</option>
+                        <option value="Votes">votes</option>
+                        <option value="Views">views</option>
                     </select>
                     <label for="isDescending">Sort by</label>
                     <select name="isDescending" id="isDescending">
@@ -193,7 +193,7 @@
                     dataType: "json",
                     success: successCallback,
                     error: function (errorThrown) {
-                        alert(errorThrown);
+                        console.log(errorThrown);
                     }
                 });
             }
@@ -207,7 +207,7 @@
                 e.preventDefault();
 
                 var input = $("#search").val();
-                var url = '?titlefragment=' + input;
+                var url = '?titleFragment=' + input;
 
                 window.location.href = 'https://localhost:5001/HTML/Search.html' + url;
             }
@@ -233,7 +233,7 @@
                 statuses += '&';
             }
             var arsInput = $("#ar-multichoice").val();
-            var ars = '';
+            var ars = '&';
             for (var i = 0; i < arsInput.length; i++) {
                 ars += 'arIds=' + $.getAgeRestrictionId(arsInput[i]);
                 if (i + 1 >= arsInput.length) {
@@ -242,7 +242,7 @@
                 ars += '&';
             }
             var genresInput = $("#genre-multichoice").val();
-            var genres = '';
+            var genres = '&';
             for (var i = 0; i < genresInput.length; i++) {
                 genres += 'genreIds=' + genresInput[i];
                 if (i + 1 >= genresInput.length) {
@@ -250,13 +250,20 @@
                 }
                 genres += '&';
             }
-            var fromYear = 'from_year=' + $("#filter_year_from").val();
-            var toYear = 'to_year=' + $("#filter_year_to").val();
-            var titleFragment = 'titleFragment=' + $("#search").val();
-            var orderBy = 'orderBy=' + $("#order-choice").val();
-            var isDescending = 'isDescending=' + $("#isDescending").val();
+            if (ars == '&') ars = '';
+            if (genres == '&') genres = '';
+            var fromYear = '&from_year=' + $("#filter_year_from").val();
+            if (fromYear == '&from_year=') fromYear = '';
+            var toYear = '&to_year=' + $("#filter_year_to").val();
+            if (toYear == '&to_year=') toYear = '';
+            var titleFragment = '&titleFragment=' + $("#search").val();
+            if (titleFragment == '&titleFragment=') titleFragment = '';
+            var orderBy = '&orderBy=' + $("#order-choice").val();
+            if (orderBy == '&orderBy=') orderBy = '';
+            var isDescending = '&isDescending=' + $("#isDescending").val();
+            if (isDescending == '&isDescending=false') isDescending = '';
 
-            var url = '?' + statuses + '&' + ars + '&' + genres + '&' + fromYear + '&' + toYear + '&' + titleFragment + '&' + orderBy + '&' + isDescending;
+            var url = '?' + statuses + ars + genres + fromYear + toYear + titleFragment + orderBy + isDescending;
             window.location.href = 'https://localhost:5001/HTML/Search.html' + url;
         });
 
