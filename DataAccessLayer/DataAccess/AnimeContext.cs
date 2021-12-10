@@ -16,6 +16,8 @@ namespace AnimeLib.Domain.DataAccess
         public DbSet<Status> Statuses { get; set; }
         public DbSet<AgeRestriction> AgeRestrictions { get; set; }
         public DbSet<AnimeGenre> AnimeGenre { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<UserRole> UserRoles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
