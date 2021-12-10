@@ -197,6 +197,11 @@ namespace AnimeLib.Domain.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)");
+
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasMaxLength(64)
@@ -212,7 +217,13 @@ namespace AnimeLib.Domain.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Email")
+                        .IsUnique();
+
                     b.HasIndex("RoleId");
+
+                    b.HasIndex("Username")
+                        .IsUnique();
 
                     b.ToTable("Users");
                 });
@@ -293,7 +304,7 @@ namespace AnimeLib.Domain.Migrations
             modelBuilder.Entity("AnimeLib.Domain.Models.User", b =>
                 {
                     b.HasOne("AnimeLib.Domain.Models.UserRole", "Role")
-                        .WithMany("Users")
+                        .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -316,11 +327,6 @@ namespace AnimeLib.Domain.Migrations
             modelBuilder.Entity("AnimeLib.Domain.Models.Genre", b =>
                 {
                     b.Navigation("Animes");
-                });
-
-            modelBuilder.Entity("AnimeLib.Domain.Models.UserRole", b =>
-                {
-                    b.Navigation("Users");
                 });
 #pragma warning restore 612, 618
         }

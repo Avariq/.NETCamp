@@ -27,6 +27,7 @@ namespace AnimeLib.Domain.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Username = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: false),
                     PasswordHash = table.Column<string>(type: "char(64)", maxLength: 64, nullable: false),
+                    Email = table.Column<string>(type: "varchar(64)", maxLength: 64, nullable: false),
                     RoleId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -41,9 +42,21 @@ namespace AnimeLib.Domain.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Users_Email",
+                table: "Users",
+                column: "Email",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Users_RoleId",
                 table: "Users",
                 column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_Username",
+                table: "Users",
+                column: "Username",
+                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

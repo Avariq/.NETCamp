@@ -29,6 +29,12 @@ namespace AnimeLib.Domain.DataAccess
             modelBuilder.Entity<Anime>()
                 .Property(a => a.Views)
                 .HasDefaultValue(0);
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Username)
+                .IsUnique();
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
         }
     }
 }

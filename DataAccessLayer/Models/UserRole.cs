@@ -15,7 +15,5 @@ namespace AnimeLib.Domain.Models
         [MaxLength(16)]
         [Column(TypeName = "varchar(16)")]
         public string Role { get; set; }
-
-        public virtual ICollection<User> Users { get; set; }
     }
 }

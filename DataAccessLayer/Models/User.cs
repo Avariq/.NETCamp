@@ -20,6 +20,12 @@ namespace AnimeLib.Domain.Models
         [Column(TypeName = "char(64)")]
         public string PasswordHash { get; set; }
 
+        [Required]
+        [MaxLength(64)]
+        [Column(TypeName = "varchar(64)")]
+        [EmailAddress]
+        public string Email { get; set; }
+
         public int RoleId { get; set; }
 
         public virtual UserRole Role { get; set; }
