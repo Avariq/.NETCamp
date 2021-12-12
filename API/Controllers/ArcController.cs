@@ -107,6 +107,7 @@ namespace AnimeLib.API.Controllers
                 }
 
                 var createdArc = animeService.CreateArc(arc);
+                logger.LogInformation("Arc has been successfully created");
                 return CreatedAtAction(nameof(GetArcById), new { id = createdArc.Id }, createdArc);
             }
             catch (AnimeServiceException e)

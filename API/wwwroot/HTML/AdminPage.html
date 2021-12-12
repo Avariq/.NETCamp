@@ -373,17 +373,12 @@
                 $inputs.prop("disabled", false);
                 return;
             }
-            if (jQuery.inArray(arcTitle, arcs) == -1) {
-                console.error("Such arc does not exist.");
-                console.log(arcTitle);
-                $inputs.prop("disabled", false);
-                return;
-            }
+
             var animeId = $.getAnimeId(animeTitle);
             var arcId = $.getArcId(arcTitle, animeId);
 
             if (arcId == -1) {
-                console.error("Invalid arc id");
+                console.error("Such arc does not exist.");
                 $inputs.prop("disabled", false);
                 return;
             }
@@ -539,7 +534,7 @@
 
             $.ajax({
                 headers: { 'Authorization': 'Bearer ' + localStorage.getItem('JwtToken') },
-                url: "https://localhost:5001/FileUpload",
+                url: "https://localhost:5001/api/FileUpload",
                 data: formData,
                 processData: false,
                 contentType: false,

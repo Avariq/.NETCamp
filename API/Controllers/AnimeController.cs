@@ -154,6 +154,7 @@ namespace AnimeLib.API.Controllers
         {
             try
             {
+                logger.LogInformation("Creating anime");
                 if (inputAnime == null)
                 {
                     return BadRequest();
@@ -162,6 +163,7 @@ namespace AnimeLib.API.Controllers
                 var anime = mapper.Map<Anime>(inputAnime.Anime);
 
                 var createdAnime = animeService.CreateAnime(anime, inputAnime.Genres);
+                logger.LogInformation("Anime has been successfully created");
                 return CreatedAtAction(nameof(GetAnimeById), new { id = createdAnime.Id }, createdAnime);
             }
             catch (AnimeServiceException e)

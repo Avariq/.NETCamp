@@ -127,11 +127,6 @@ namespace AnimeLib.Services
 
             int size = arcs.Length;
 
-            if (size == 0)
-            {
-                throw new NonexistentAnimeIdException(id);
-            }
-
             string[] titles = new string[size];
             for (int i = 0; i < size; ++i)
             {
@@ -191,6 +186,15 @@ namespace AnimeLib.Services
 
         public Anime CreateAnime(Anime anime, Genre[] genres)
         {
+            Anime _anime = context.Animes.
+                Where(a => a.Title.Equals(anime.Title))
+                .SingleOrDefault();
+
+            if (_anime != null)
+            {
+                throw new AnimeAlreadyExistsException(anime.Title);
+            }
+
             using (var transaction = context.Database.BeginTransaction())
             {
                 try

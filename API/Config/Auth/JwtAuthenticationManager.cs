@@ -40,7 +40,7 @@ namespace AnimeLib.API.Config.Auth
                     new Claim(ClaimTypes.Role, user.Role.Role)
                 }),
                 IssuedAt = DateTime.UtcNow,
-                Expires = DateTime.UtcNow.AddMinutes(3),
+                Expires = DateTime.UtcNow.AddMinutes(30),
                 SigningCredentials = new SigningCredentials(_privateRsaKey, SecurityAlgorithms.RsaSha256Signature)
             };
 

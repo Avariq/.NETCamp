@@ -85,6 +85,7 @@ namespace AnimeLib.API.Controllers
                 }
 
                 var createdEpisode = animeService.CreateEpisode(episode);
+                logger.LogInformation("Episode has been successfully created");
                 return CreatedAtAction(nameof(GetEpisodeById), new { id = createdEpisode.Id }, createdEpisode);
             }
             catch (AnimeServiceException e)

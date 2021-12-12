@@ -96,12 +96,9 @@ function removeExpiration() {
 }
 function refreshExpiration() {
     var curExp = window.localStorage.getItem("Expires");
-    console.log("In refresh.");
     if (curExp) {
-        console.log("Refresh found token");
         var newExp = curExp - Date.now();
         if (newExp < 60000 * 2) {
-            console.log("Hooooray");
             refreshToken();
             setExpiration();
         }
