@@ -1,6 +1,8 @@
+using AnimeLib.API.Config.Auth;
 using AnimeLib.Domain.DataAccess;
 using AnimeLib.Services;
 using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -11,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,10 +38,14 @@ namespace AnimeLib.API
                 options.UseSqlServer(Configuration.GetConnectionString("Default"));
             });
             services.AddScoped<AnimeService>();
+            services.AddScoped<UserService>();
             services.AddControllers().AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             services.AddControllers();
             services.AddSwaggerGen();
+
+            services.AddSingleton<IJwtAuthenticationManager, JwtAuthenticationManager>();
+            services.AddTransient<IConfigureOptions<JwtBearerOptions>, JwtConfigurer>();
 
             var mapperConfig = new MapperConfiguration(mc =>
             {
@@ -49,6 +56,13 @@ namespace AnimeLib.API
             services.AddSingleton(mapper);
 
             services.AddAutoMapper(typeof(Startup));
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -65,6 +79,7 @@ namespace AnimeLib.API
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

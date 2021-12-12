@@ -1,0 +1,45 @@
+﻿body {
+    margin: 0;
+}
+header {
+    margin-bottom: 20px;
+}
+#login-section {
+    display: flex;
+    border-bottom: solid 3px;
+    border-bottom-color: #e64242;
+    border-top: solid 3px;
+    border-top-color: #e64242;
+    margin-top: 200px;
+    width: 100%;
+    justify-content: center;
+}
+form {
+    padding: 40px 0;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+}
+form > input {
+    width: 200px;
+    background-color: #333;
+    color: #00ff90;
+    height: 30px;
+    font-size: 16px;
+}
+#submit {
+    margin-top: 10px;
+}
+.successfulResponce {
+    color: #00ff90;
+}
+.unsuccessfulResponce {
+    color: #e64242;
+}
+#login-responce {
+    padding-top: 10px;
+    font-size: 14px;
+    width: 200px;
+    text-align: center;
+    display: none;
+}

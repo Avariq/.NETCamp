@@ -26,10 +26,8 @@ namespace AnimeLib.Services
             return amount;
         }
 
-        public Anime[] GetRecent(int pageNumber, int pageSize)
+        public Anime[] GetRecent(int toSkip, int toTake)
         {
-            var totalPages = (int)Math.Ceiling((double)(GetAnimeAmount() / pageSize));
-
             var animes = context.Animes
                 .Include(s => s.Status)
                 .Include(rs => rs.AgeRestriction)
@@ -37,8 +35,8 @@ namespace AnimeLib.Services
                 .ThenInclude(a => a.Genre)
                 .Include(arc => arc.Arcs)
                 .ThenInclude(ep => ep.Episodes)
-                .Skip((totalPages - pageNumber) * pageSize)
-                .Take(pageSize)
+                .Skip(toSkip)
+                .Take(toTake)
                 .OrderByDescending(a => a.Id)
                 .ToArray();
 
@@ -219,6 +217,9 @@ namespace AnimeLib.Services
                 try
                 {
                     context.Episodes.Add(episode);
+                    var arc = context.Arcs.Where(a => a.Id.Equals(episode.ArcId)).Single();
+                    var anime = context.Animes.Where(a => a.Id.Equals(arc.AnimeId)).Single();
+                    ++anime.Episodes;
                     context.SaveChanges();
                     transaction.Commit();
                     return episode;

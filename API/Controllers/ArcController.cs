@@ -1,5 +1,6 @@
 ﻿using AnimeLib.Domain.Models;
 using AnimeLib.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -23,8 +24,9 @@ namespace AnimeLib.API.Controllers
             animeService = _animeService;
         }
 
-        [HttpGet(nameof(GetArcs) + "/{animeId}")]
-        public IActionResult GetArcs(int animeId)
+        [HttpGet(nameof(GetArcs))]
+        [AllowAnonymous]
+        public IActionResult GetArcs([FromQuery] int animeId)
         {
             string[] titles = animeService.GetArcTitlesByAnimeId(animeId);
 
@@ -32,6 +34,7 @@ namespace AnimeLib.API.Controllers
         }
 
         [HttpGet(nameof(GetArcById) + "/{id}")]
+        [AllowAnonymous]
         public IActionResult GetArcById(int id)
         {
             Arc arc = animeService.GetArcById(id);
@@ -39,16 +42,18 @@ namespace AnimeLib.API.Controllers
             return Ok(arc);
         }
 
-        [HttpGet(nameof(GetArcId) + "/{arcName}")]
-        public IActionResult GetArcId(string arcName)
+        [HttpGet(nameof(GetArcId))]
+        [AllowAnonymous]
+        public IActionResult GetArcId([FromQuery] string arcName)
         {
             int id = animeService.GetArcId(arcName);
 
             return Ok(id);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost(nameof(CreateArc))]
-        public async Task<ActionResult<Arc>> CreateArc(Arc arc)
+        public ActionResult<Arc> CreateArc(Arc arc)
         {
             try
             {

@@ -1,4 +1,5 @@
 ﻿using AnimeLib.Domain.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace AnimeLib.API.Controllers
 {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class FileUploadController : ControllerBase
     {
@@ -21,6 +22,7 @@ namespace AnimeLib.API.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public string Post([FromForm] FileUpload objectFile)
         {

@@ -1,5 +1,6 @@
 ﻿using AnimeLib.Domain.Models;
 using AnimeLib.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -23,16 +24,18 @@ namespace AnimeLib.API.Controllers
             animeService = _animeService;
         }
 
-        [HttpGet(nameof(GetEpisodeById) + "/{id}")]
-        public IActionResult GetEpisodeById(int id)
+        [HttpGet(nameof(GetEpisodeById))]
+        [AllowAnonymous]
+        public IActionResult GetEpisodeById([FromQuery] int id)
         {
             Episode ep = animeService.GetEpisodeById(id);
 
             return Ok(ep);
         }
 
-        [HttpGet(nameof(GetEpisodeId) + "/{arcId}/{epName}")]
-        public IActionResult GetEpisodeId(int arcId, string epName)
+        [HttpGet(nameof(GetEpisodeId))]
+        [AllowAnonymous]
+        public IActionResult GetEpisodeId([FromQuery] int arcId, string epName)
         {
             int id = animeService.GetEpisodeId(arcId, epName);
 
@@ -42,8 +45,9 @@ namespace AnimeLib.API.Controllers
             return Ok(id);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost(nameof(CreateEpisode))]
-        public async Task<ActionResult<Episode>> CreateEpisode(Episode episode)
+        public ActionResult<Episode> CreateEpisode(Episode episode)
         {
             try
             {

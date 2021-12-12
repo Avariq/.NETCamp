@@ -16,11 +16,12 @@
     <header class="header">
         <div class="container">
             <ul class="menu">
-                <li><a class="admin-page" href="HTML/AdminPage.html"> Admin page </a></li>
+                <li><a id="admin-page" class="admin-page" href="HTML/AdminPage.html"> Admin page </a></li>
                 <li><a href="#"> Main page </a></li>
-                <li><a href="#">Catalogue</a></li>
                 <li><a href="#">TOP-100</a></li>
                 <li><a href="#">Random Anime</a></li>
+                <li id="login" class="login"><a href="HTML/Login.html">Log in</a></li>
+                <li id="logout" class="logout"><a href="index.html?page=1">Log out</a></li>
             </ul>
         </div>
     </header>
@@ -91,7 +92,7 @@
 
     <script type="text/javascript">
 
-        var animePerPage = 6;
+        var animePerPage = 7;
         var genres = null;
 
         jQuery.extend({
@@ -118,6 +119,8 @@
         });
 
         $(document).ready(function () {
+            displayAdminPage();
+            displayLogInOut();
             $.displayPage(1, animePerPage);
             genres = $.getAllGenres();
             InjectGenres();
@@ -127,6 +130,42 @@
             $("#order-choice").select2();
             $("#isDescending").select2();
         });
+
+        $("#logout").click(function (event) {
+            event.preventDefault();
+
+            localStorage.removeItem("JwtToken");
+            window.location.href = "/index.html?page=1";
+        });
+
+        function displayLogInOut() {
+            if (localStorage.getItem("JwtToken")) {
+                $("#login").hide();
+                $("#logout").show();
+            }
+            else {
+                $("#login").show();
+                $("#logout").hide();
+            }
+        }
+
+        function displayAdminPage() {
+            var token = localStorage.getItem("JwtToken");
+            if (token) {
+                var parsedToken = JSON.parse(atob(token.split('.')[1]));
+                if (Date.now() >= parsedToken['exp'] * 1000) {
+                    $("#admin-page").hide();
+                    return false;
+                }
+                console.log(parsedToken);
+                if (parsedToken['role'] == "Admin") {
+                    $("#admin-page").show();
+                }
+                else {
+                    $("#admin-page").hide();
+                }
+            }   
+        }
 
         var Manager = {
             GetRecent: function (pageNumber, pageSize) {

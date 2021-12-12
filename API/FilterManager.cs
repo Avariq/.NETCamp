@@ -10,6 +10,26 @@ namespace AnimeLib.API
 {
     public static class FilterManager
     {
+
+        private static readonly Dictionary<string, Func<IQueryable<Anime>, FilterBody, IQueryable<Anime>>> _mapping =
+            new Dictionary<string, Func<IQueryable<Anime>, FilterBody, IQueryable<Anime>>>()
+            {
+                ["TitleContainsText"] = ApplyTitleContainsText,
+                ["HasStatus"] = ApplyHasStatus,
+                ["HasAgeRestriction"] = ApplyHasAgeRestriction,
+                ["YearSpanFrom"] = ApplyYearSpanFrom,
+                ["YearSpanTo"] = ApplyYearSpanTo,
+                ["HasGenres"] = ApplyHasGenres,
+                ["OrderAscending"] = ApplyOrderAscending,
+                ["OrderDescending"] = ApplyOrderDescending,
+            };
+
+        public static IQueryable<Anime> Apply(this IQueryable<Anime> animes, FilterBody filter)
+        {
+            var filterHandler = _mapping[filter.Name];
+            var result = filterHandler(animes, filter);
+            return result;
+        }
         public static IQueryable<Anime> ApplyTitleContainsText(IQueryable<Anime> animeData, FilterBody filter)
         {
             string textFragment = filter.Values[0];

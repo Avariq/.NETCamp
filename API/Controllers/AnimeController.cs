@@ -4,6 +4,7 @@ using AnimeLib.Domain.DataAccess;
 using AnimeLib.Domain.Models;
 using AnimeLib.Services;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -11,9 +12,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
-/*    async Task<ActionResult> + Exception handling    */
 
 namespace AnimeLib.API.Controllers
 {
@@ -33,38 +34,50 @@ namespace AnimeLib.API.Controllers
         }
 
         [HttpGet(nameof(GetRecent))]
+        [AllowAnonymous]
         public IActionResult GetRecent([FromQuery] PageArgs pageArgs)
         {
             AnimeArgsOut animesOutput = new();
+            int animeAmount = animeService.GetAnimeAmount();
+            double temp = Math.Ceiling((double)animeAmount / (double)pageArgs.pageSize);
+            int totalPages = (int)temp;
+            int toSkip = (totalPages - pageArgs.pageNumber) * pageArgs.pageSize;
+            int toTake = pageArgs.pageSize;
 
-            animesOutput.animes = animeService.GetRecent(pageArgs.pageNumber, pageArgs.pageSize);
-            animesOutput.totalAmount = animeService.GetAnimeAmount();
+            if (pageArgs.pageNumber == 1)
+            {
+                toSkip = animeAmount - pageArgs.pageSize;
+            }
+
+            if (toSkip == 0)
+            {
+                toTake = animeAmount - (pageArgs.pageNumber - 1) * pageArgs.pageSize;
+            }
+
+
+            animesOutput.animes = animeService.GetRecent(toSkip, toTake);
+            animesOutput.totalAmount = animeAmount;
 
             return Ok(animesOutput);
         }
 
         [HttpPost(nameof(GetByFilter))]
+        [AllowAnonymous]
         public IActionResult GetByFilter([FromBody] FilterBody[] filters)
         {
             IQueryable<Anime> animeData = animeService.GetAllAnimesQueryable();
 
-            foreach (var filter in filters)
+            foreach (FilterBody filter in filters)
             {
-                object[] arguments = { animeData, filter };
-                string filterMethod = "Apply" + filter.Name;
-
-                Type type = typeof(FilterManager);
-                MethodInfo methodInfo = type.GetMethod(filterMethod);
-
-                animeData = (IQueryable<Anime>)methodInfo.Invoke(filterMethod, arguments);
+                animeData = animeData.Apply(filter);
             }
-            
 
             return Ok(animeData.ToArray());
         }
 
-        [HttpGet(nameof(GetAnimeIdByTitle) + "/{title}")]
-        public IActionResult GetAnimeIdByTitle(string title)
+        [HttpGet(nameof(GetAnimeIdByTitle))]
+        [AllowAnonymous]
+        public IActionResult GetAnimeIdByTitle([FromQuery] string title)
         {
             int returnedId = animeService.GetAnimeId(title);
 
@@ -72,6 +85,7 @@ namespace AnimeLib.API.Controllers
         }
 
         [HttpGet(nameof(GetAnimeTitles))]
+        [AllowAnonymous]
         public IActionResult GetAnimeTitles()
         {
             string[] titles = animeService.GetAllAnimeTitles();
@@ -80,15 +94,22 @@ namespace AnimeLib.API.Controllers
         }
 
         [HttpGet(nameof(GetAnimeById))]
+        [AllowAnonymous]
         public IActionResult GetAnimeById([FromQuery] int animeId)
         {
+            ClaimsPrincipal currentUser = Request.HttpContext.User;
+            if (!currentUser.Identity.IsAuthenticated)
+            {
+                Console.WriteLine("HAha");
+            }
             Anime anime = animeService.GetAnimeById(animeId);
 
             return Ok(anime);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost(nameof(CreateAnime))]
-        public async Task<ActionResult<Anime>> CreateAnime([FromBody] AnimeArgs inputAnime)
+        public ActionResult<Anime> CreateAnime([FromBody] AnimeArgs inputAnime)
         {
             try
             {
@@ -109,15 +130,17 @@ namespace AnimeLib.API.Controllers
             }
         }
 
-        [HttpGet(nameof(GetStatusId) + "/{statusName}")]
-        public IActionResult GetStatusId(string statusName)
+        [HttpGet(nameof(GetStatusId))]
+        [AllowAnonymous]
+        public IActionResult GetStatusId([FromQuery] string statusName)
         {
             int id = animeService.GetStatusId(statusName);
 
             return Ok(id);
         }
 
-        [HttpGet(nameof(GetAgeRestrictionId) + "/{ageRestrictionCode}")]
+        [HttpGet(nameof(GetAgeRestrictionId))]
+        [AllowAnonymous]
         public IActionResult GetAgeRestrictionId(string ageRestrictionCode)
         {
             int id = animeService.GetAgeRestrictionId(ageRestrictionCode);
@@ -126,6 +149,7 @@ namespace AnimeLib.API.Controllers
         }
 
         [HttpGet(nameof(GetAllGenres))]
+        [AllowAnonymous]
         public IActionResult GetAllGenres()
         {
             var genres = animeService.GetAllGenres();

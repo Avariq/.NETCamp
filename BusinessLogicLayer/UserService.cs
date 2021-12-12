@@ -1,5 +1,6 @@
 ﻿using AnimeLib.Domain.DataAccess;
 using AnimeLib.Domain.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +21,7 @@ namespace AnimeLib.Services
         public User GetUserByUsername(string username)
         {
             var user = context.Users
+                .Include(u => u.Role)
                 .Where(u => u.Username.Equals(username))
                 .SingleOrDefault();
 
