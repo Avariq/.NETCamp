@@ -1,5 +1,6 @@
 ﻿using AnimeLib.Domain.DataAccess;
 using AnimeLib.Domain.Models;
+using AnimeLib.Services.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -26,7 +27,7 @@ namespace AnimeLib.Services
             return amount;
         }
 
-        public Anime[] GetRecent(int toSkip, int toTake)
+        protected IQueryable<Anime> GetAnimesPaginated(int toTake, int toSkip)
         {
             var animes = context.Animes
                 .Include(s => s.Status)
@@ -37,8 +38,35 @@ namespace AnimeLib.Services
                 .ThenInclude(ep => ep.Episodes)
                 .Skip(toSkip)
                 .Take(toTake)
-                .OrderByDescending(a => a.Id)
-                .ToArray();
+                .OrderByDescending(a => a.Id);
+
+            return animes;
+        }
+
+        public Anime[] GetRecent(int animeAmount, int pageNumber, int pageSize)
+        {
+            int totalPages = (int)Math.Ceiling((double)animeAmount / (double)pageSize);
+
+            int toSkip = (totalPages - pageNumber) * pageSize;
+            int toTake = pageSize;
+
+            if (pageNumber < 1 || pageSize < 1)
+            {
+                throw new InvalidPageArgumentsException();
+            }
+
+            if (pageNumber == 1)
+            {
+                toSkip = animeAmount - pageSize;
+            }
+
+            if (toSkip == 0)
+            {
+                toTake = animeAmount - (pageNumber - 1) * pageSize;
+            }
+
+            var animes = GetAnimesPaginated(toTake, toSkip).ToArray();
+            
 
             return animes;
         }
@@ -134,7 +162,12 @@ namespace AnimeLib.Services
                 .ThenInclude(g => g.Genre)
                 .Include(arc => arc.Arcs)
                 .ThenInclude(ep => ep.Episodes)
-                .First();
+                .SingleOrDefault();
+
+            if (anime == null)
+            {
+                throw new NonexistentAnimeIdException(id);
+            }
 
             return anime;
         }
@@ -161,10 +194,10 @@ namespace AnimeLib.Services
 
                     return anime;
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     transaction.Rollback();
-                    throw e.InnerException;
+                    throw new AnimeCreationException();
                 }
             }
         }
@@ -236,7 +269,12 @@ namespace AnimeLib.Services
         {
             var status = context.Statuses
                 .Where(s => s.StatusName.Equals(statusName))
-                .First();
+                .SingleOrDefault();
+
+            if (status == null)
+            {
+                throw new NonexistentStatusNameException(statusName);
+            }
 
             return status.Id;
         }
@@ -245,7 +283,12 @@ namespace AnimeLib.Services
         {
             var ar = context.AgeRestrictions
                 .Where(a => a.RestrictionCode.Equals(ageRestrictionCode))
-                .First();
+                .SingleOrDefault();
+
+            if (ar == null)
+            {
+                throw new NonexistentAgeRestrictionCodeException(ageRestrictionCode);
+            }
 
             return ar.Id;
         }

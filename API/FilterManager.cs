@@ -1,5 +1,6 @@
 ﻿using AnimeLib.API.Models;
 using AnimeLib.Domain.Models;
+using AnimeLib.Services.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,9 +26,17 @@ namespace AnimeLib.API
 
         public static IQueryable<Anime> Apply(this IQueryable<Anime> animes, FilterBody filter)
         {
-            var filterHandler = filterMapper[filter.Name];
-            var result = filterHandler(animes, filter);
-            return result;
+            if (filterMapper.TryGetValue(filter.Name, out var filterHandler))
+            {
+                var result = filterHandler(animes, filter);
+                return result;
+            }
+            else
+            {
+                throw new NonexistentFilterNameException(filter.Name);
+            }
+            
+            
         }
         public static IQueryable<Anime> ApplyTitleContainsText(IQueryable<Anime> animeData, FilterBody filter)
         {

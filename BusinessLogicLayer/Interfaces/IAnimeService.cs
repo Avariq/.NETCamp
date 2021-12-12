@@ -23,7 +23,7 @@ namespace AnimeLib.Services
         string[] GetArcTitlesByAnimeId(int id);
         Episode GetEpisodeById(int id);
         int GetEpisodeId(int arcId, string epName);
-        Anime[] GetRecent(int toSkip, int toTake);
+        Anime[] GetRecent(int animeAmount, int pageNumber, int pageSize);
         int GetStatusId(string statusName);
     }
 }
