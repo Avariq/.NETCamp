@@ -10,8 +10,7 @@ namespace AnimeLib.API
 {
     public static class FilterManager
     {
-
-        private static readonly Dictionary<string, Func<IQueryable<Anime>, FilterBody, IQueryable<Anime>>> _mapping =
+        private static readonly Dictionary<string, Func<IQueryable<Anime>, FilterBody, IQueryable<Anime>>> filterMapper =
             new Dictionary<string, Func<IQueryable<Anime>, FilterBody, IQueryable<Anime>>>()
             {
                 ["TitleContainsText"] = ApplyTitleContainsText,
@@ -26,7 +25,7 @@ namespace AnimeLib.API
 
         public static IQueryable<Anime> Apply(this IQueryable<Anime> animes, FilterBody filter)
         {
-            var filterHandler = _mapping[filter.Name];
+            var filterHandler = filterMapper[filter.Name];
             var result = filterHandler(animes, filter);
             return result;
         }
@@ -79,7 +78,7 @@ namespace AnimeLib.API
             switch (property)
             {
                 case "Title":
-                    animeData = animeData.OrderBy(a => a.Title);
+                    animeData = animeData.OrderByDescending(a => a.Title);
                     break;
                 case "Year":
                     animeData = animeData.OrderBy(a => a.Year);
@@ -107,7 +106,7 @@ namespace AnimeLib.API
             switch (property)
             {
                 case "Title":
-                    animeData = animeData.OrderByDescending(a => a.Title);
+                    animeData = animeData.OrderBy(a => a.Title);
                     break;
                 case "Year":
                     animeData = animeData.OrderByDescending(a => a.Year);

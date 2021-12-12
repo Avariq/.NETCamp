@@ -37,7 +37,7 @@ namespace AnimeLib.API.Config.Auth
                     CacheSignatureProviders = false
                 }
             };
-            
+
         }
 
         public void Configure(JwtBearerOptions options) { throw new NotImplementedException(); }
