@@ -97,11 +97,6 @@ namespace AnimeLib.API.Controllers
         [AllowAnonymous]
         public IActionResult GetAnimeById([FromQuery] int animeId)
         {
-            ClaimsPrincipal currentUser = Request.HttpContext.User;
-            if (!currentUser.Identity.IsAuthenticated)
-            {
-                Console.WriteLine("HAha");
-            }
             Anime anime = animeService.GetAnimeById(animeId);
 
             return Ok(anime);

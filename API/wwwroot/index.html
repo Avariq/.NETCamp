@@ -118,7 +118,11 @@
             }
         });
 
+        var timer;
+
         $(document).ready(function () {
+            setExpiration();
+            timer = window.setInterval(refreshExpiration, 5000);
             displayAdminPage();
             displayLogInOut();
             $.displayPage(1, animePerPage);
@@ -135,17 +139,30 @@
             event.preventDefault();
 
             localStorage.removeItem("JwtToken");
+            removeExpiration();
             window.location.href = "/index.html?page=1";
         });
 
         function displayLogInOut() {
-            if (localStorage.getItem("JwtToken")) {
-                $("#login").hide();
-                $("#logout").show();
+            var token = localStorage.getItem("JwtToken");
+            if (token) {
+                var parsedToken = JSON.parse(atob(token.split('.')[1]));
+                if (Date.now() < parsedToken['exp'] * 1000) {
+                    $("#login").hide();
+                    $("#logout").show();
+                }
+                else {
+                    window.clearInterval(timer);
+                    $("#login").show();
+                    $("#logout").hide();
+                    window.localStorage.removeItem("JwtToken");
+                }
             }
             else {
+                window.clearInterval(timer);
                 $("#login").show();
                 $("#logout").hide();
+                window.localStorage.removeItem("JwtToken");
             }
         }
 
