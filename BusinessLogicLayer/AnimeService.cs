@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace AnimeLib.Services
 {
-    public class AnimeService
+    public class AnimeService : IAnimeService
     {
         private readonly AnimeContext context;
 
@@ -64,7 +64,7 @@ namespace AnimeLib.Services
             /*string.IsNullOrWhiteSpace(stringnem)*/
             /*int.HasValue*/
 
-            return animes;   
+            return animes;
         }
 
         public int GetAnimeId(string title)
@@ -121,7 +121,7 @@ namespace AnimeLib.Services
                 .Include(a => a.Episodes)
                 .First();
 
-            return arc; 
+            return arc;
         }
 
         public Anime GetAnimeById(int id)
@@ -296,7 +296,7 @@ namespace AnimeLib.Services
                 ids[i] = genres[i].Id;
             }
 
-            return ids;      
+            return ids;
         }
 
     }

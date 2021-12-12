@@ -16,9 +16,9 @@ namespace AnimeLib.API.Controllers
     public class ArcController : ControllerBase
     {
         private readonly ILogger<ArcController> logger;
-        private readonly AnimeService animeService;
+        private readonly IAnimeService animeService;
 
-        public ArcController(ILogger<ArcController> _logger, AnimeService _animeService)
+        public ArcController(ILogger<ArcController> _logger, IAnimeService _animeService)
         {
             logger = _logger;
             animeService = _animeService;

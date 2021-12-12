@@ -16,9 +16,9 @@ namespace AnimeLib.API.Controllers
     public class EpisodeController : ControllerBase
     {
         private readonly ILogger<EpisodeController> logger;
-        private readonly AnimeService animeService;
+        private readonly IAnimeService animeService;
 
-        public EpisodeController(ILogger<EpisodeController> _logger, AnimeService _animeService)
+        public EpisodeController(ILogger<EpisodeController> _logger, IAnimeService _animeService)
         {
             logger = _logger;
             animeService = _animeService;

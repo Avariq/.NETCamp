@@ -37,8 +37,9 @@ namespace AnimeLib.API
             {
                 options.UseSqlServer(Configuration.GetConnectionString("Default"));
             });
-            services.AddScoped<AnimeService>();
-            services.AddScoped<UserService>();
+
+            services.AddScoped<IAnimeService, AnimeService>();
+            services.AddScoped<IUserService, UserService>();
             services.AddControllers().AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             services.AddControllers();

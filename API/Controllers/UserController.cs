@@ -20,11 +20,11 @@ namespace AnimeLib.API.Controllers
     public class UserController : ControllerBase
     {
         private readonly ILogger<UserController> logger;
-        private readonly UserService userService;
+        private readonly IUserService userService;
         private readonly IMapper mapper;
         private readonly IJwtAuthenticationManager jwtAuthManager;
 
-        public UserController(ILogger<UserController> _logger, UserService _userService, IMapper _mapper, IJwtAuthenticationManager _jwtAuthManager)
+        public UserController(ILogger<UserController> _logger, IUserService _userService, IMapper _mapper, IJwtAuthenticationManager _jwtAuthManager)
         {
             logger = _logger;
             userService = _userService;

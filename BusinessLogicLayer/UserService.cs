@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace AnimeLib.Services
 {
-    public class UserService
+    public class UserService : IUserService
     {
         private readonly AnimeContext context;
 

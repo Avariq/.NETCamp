@@ -17,7 +17,7 @@
     <header class="header">
         <div class="container">
             <ul class="menu">
-                <li><a class="admin-page" href="HTML/AdminPage.html"> Admin page </a></li>
+                <li><a class="admin-page" href="AdminPage.html"> Admin page </a></li>
                 <li><a href="../index.html?page=1"> Main page </a></li>
                 <li><a href="#">Catalogue</a></li>
                 <li><a href="#">TOP-100</a></li>
@@ -113,17 +113,15 @@
                 var HasGenresFilter = new filterBody("HasGenres", "string", genreIds, "Genres");
                 filters.push(HasGenresFilter);
             }
-            if (!isDescending) {
-                if (orderBy) {
-                    var OrderAscendingFilter = new filterBody("OrderAscending", "string", '', orderBy[0]);
-                    filters.push(OrderAscendingFilter);
-                }
-            }
-            else {
-                if (orderBy) {
+            if (orderBy) {
+                if (isDescending) {
                     var OrderDescendingFilter = new filterBody("OrderDescending", "string", '', orderBy[0]);
                     filters.push(OrderDescendingFilter);
                 }
+                else {
+                    var OrderAscendingFilter = new filterBody("OrderAscending", "string", '', orderBy[0]);
+                    filters.push(OrderAscendingFilter);
+                }  
             }
             return filters;
         }
@@ -132,9 +130,9 @@
             var foundTotal = animes.length;
             $("#search-result").text(foundTotal + " Animes found");
 
-            for (var i = 0; i < foundTotal; i++) {
+            for (var i = (foundTotal-1); i >= 0; i--) {
                 var elem = animes[i];
-                console.log(elem);
+                console.log(elem.title);
                 var html = '';
                 html += '<div class="preview-block">';
                 html += '<a href="https://localhost:5001/HTML/Anime.html?Id=' + elem.id + '">';

@@ -23,10 +23,10 @@ namespace AnimeLib.API.Controllers
     public class AnimeController : ControllerBase
     {
         private readonly ILogger logger;
-        private readonly AnimeService animeService;
+        private readonly IAnimeService animeService;
         private readonly IMapper mapper;
 
-        public AnimeController(ILogger<AnimeController> _logger, AnimeService _animeService, IMapper _mapper)
+        public AnimeController(ILogger<AnimeController> _logger, IAnimeService _animeService, IMapper _mapper)
         {
             logger = _logger;
             animeService = _animeService;
