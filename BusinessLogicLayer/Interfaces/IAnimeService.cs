@@ -19,7 +19,7 @@ namespace AnimeLib.Services
         Anime GetAnimeById(int id);
         int GetAnimeId(string title);
         Arc GetArcById(int id);
-        int GetArcId(string arcName);
+        int GetArcId(string arcName, int animeId);
         string[] GetArcTitlesByAnimeId(int id);
         Episode GetEpisodeById(int id);
         int GetEpisodeId(int arcId, string epName);

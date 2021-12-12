@@ -2,6 +2,7 @@
 using AnimeLib.API.Models.Input;
 using AnimeLib.Domain.Models;
 using AnimeLib.Services;
+using AnimeLib.Services.Exceptions.Root_exceptions;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -36,20 +37,31 @@ namespace AnimeLib.API.Controllers
         [AllowAnonymous]
         public IActionResult Login([FromBody] UserCredentials userCredentials)
         {
-            User currentUser = userService.GetUserByUsername(userCredentials.Username);
-            if (currentUser is null)
+            try
             {
-                return NotFound("User with such username does not exist");
-            }
+                logger.LogInformation("User is Logging in");
 
-            if (!userCredentials.PasswordHash.Equals(currentUser.PasswordHash))
+                User currentUser = userService.GetUserByUsername(userCredentials.Username);
+
+                if (!userCredentials.PasswordHash.Equals(currentUser.PasswordHash))
+                {
+                    return BadRequest("Invalid user credentials");
+                }
+
+                var token = jwtAuthManager.FetchToken(currentUser);
+
+                return Ok(token);
+            }
+            catch (UserServiceException e)
             {
-                return BadRequest("Invalid user credentials");
+                logger.LogWarning(e.Message);
+                return StatusCode(e.StatusCode, e.Message);
             }
-
-            var token = jwtAuthManager.FetchToken(currentUser);
-
-            return Ok(token);
+            catch (Exception e)
+            {
+                logger.LogError(e.Message);
+                return BadRequest(e.Message);
+            }
         }
 
         [Authorize]

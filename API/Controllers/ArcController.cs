@@ -1,5 +1,6 @@
 ﻿using AnimeLib.Domain.Models;
 using AnimeLib.Services;
+using AnimeLib.Services.Exceptions.Root_exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -28,27 +29,69 @@ namespace AnimeLib.API.Controllers
         [AllowAnonymous]
         public IActionResult GetArcs([FromQuery] int animeId)
         {
-            string[] titles = animeService.GetArcTitlesByAnimeId(animeId);
+            try
+            {
+                logger.LogInformation($"Getting arcs by anime id: {animeId}");
+                string[] titles = animeService.GetArcTitlesByAnimeId(animeId);
 
-            return Ok(titles);
+                return Ok(titles);
+            }
+            catch (AnimeServiceException e)
+            {
+                logger.LogWarning(e.Message);
+                return StatusCode(e.StatusCode, e.Message);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e.Message);
+                return BadRequest(e.Message);
+            }
         }
 
-        [HttpGet(nameof(GetArcById) + "/{id}")]
+        [HttpGet(nameof(GetArcById))]
         [AllowAnonymous]
-        public IActionResult GetArcById(int id)
+        public IActionResult GetArcById([FromQuery] int arcId)
         {
-            Arc arc = animeService.GetArcById(id);
+            try
+            {
+                logger.LogInformation($"Getting Arc by id: {arcId}");
+                Arc arc = animeService.GetArcById(arcId);
 
-            return Ok(arc);
+                return Ok(arc);
+            }
+            catch (AnimeServiceException e)
+            {
+                logger.LogWarning(e.Message);
+                return StatusCode(e.StatusCode, e.Message);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e.Message);
+                return BadRequest(e.Message);
+            }
         }
 
         [HttpGet(nameof(GetArcId))]
         [AllowAnonymous]
-        public IActionResult GetArcId([FromQuery] string arcName)
+        public IActionResult GetArcId([FromQuery] string arcName, int animeId)
         {
-            int id = animeService.GetArcId(arcName);
+            try
+            {
+                logger.LogInformation($"Getting Arc Id by arcName: {arcName}");
+                int id = animeService.GetArcId(arcName, animeId);
 
-            return Ok(id);
+                return Ok(id);
+            }
+            catch (AnimeServiceException e)
+            {
+                logger.LogWarning(e.Message);
+                return StatusCode(e.StatusCode, e.Message);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e.Message);
+                return BadRequest(e.Message);
+            }
         }
 
         [Authorize(Roles = "Admin")]
@@ -57,6 +100,7 @@ namespace AnimeLib.API.Controllers
         {
             try
             {
+                logger.LogInformation("Creating new arc");
                 if (arc == null)
                 {
                     return BadRequest();
@@ -65,9 +109,15 @@ namespace AnimeLib.API.Controllers
                 var createdArc = animeService.CreateArc(arc);
                 return CreatedAtAction(nameof(GetArcById), new { id = createdArc.Id }, createdArc);
             }
-            catch (Exception)
+            catch (AnimeServiceException e)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error occured while creating new Arc");
+                logger.LogWarning(e.Message);
+                return StatusCode(e.StatusCode, e.Message);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e.Message);
+                return BadRequest(e.Message);
             }
         }
     }

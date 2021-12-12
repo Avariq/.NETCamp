@@ -1,5 +1,6 @@
 ﻿using AnimeLib.Domain.Models;
 using AnimeLib.Services;
+using AnimeLib.Services.Exceptions.Root_exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -26,23 +27,48 @@ namespace AnimeLib.API.Controllers
 
         [HttpGet(nameof(GetEpisodeById))]
         [AllowAnonymous]
-        public IActionResult GetEpisodeById([FromQuery] int id)
+        public IActionResult GetEpisodeById([FromQuery] int epId)
         {
-            Episode ep = animeService.GetEpisodeById(id);
+            try
+            {
+                logger.LogInformation($"Getting episode by id: {epId}");
+                Episode ep = animeService.GetEpisodeById(epId);
 
-            return Ok(ep);
+                return Ok(ep);
+            }
+            catch (AnimeServiceException e)
+            {
+                logger.LogWarning(e.Message);
+                return StatusCode(e.StatusCode, e.Message);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e.Message);
+                return BadRequest(e.Message);
+            }
         }
 
         [HttpGet(nameof(GetEpisodeId))]
         [AllowAnonymous]
         public IActionResult GetEpisodeId([FromQuery] int arcId, string epName)
         {
-            int id = animeService.GetEpisodeId(arcId, epName);
+            try
+            {
+                logger.LogInformation($"Getting episode id by arcId: {arcId} and episode name: {epName}");
+                int id = animeService.GetEpisodeId(arcId, epName);
 
-            /*may return -1*/
-            /*Exception handling is crucial*/
-
-            return Ok(id);
+                return Ok(id);
+            }
+            catch (AnimeServiceException e)
+            {
+                logger.LogWarning(e.Message);
+                return StatusCode(e.StatusCode, e.Message);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e.Message);
+                return BadRequest(e.Message);
+            }
         }
 
         [Authorize(Roles = "Admin")]
@@ -51,6 +77,8 @@ namespace AnimeLib.API.Controllers
         {
             try
             {
+                logger.LogInformation("Creating episode");
+
                 if (episode == null)
                 {
                     return BadRequest();
@@ -59,9 +87,15 @@ namespace AnimeLib.API.Controllers
                 var createdEpisode = animeService.CreateEpisode(episode);
                 return CreatedAtAction(nameof(GetEpisodeById), new { id = createdEpisode.Id }, createdEpisode);
             }
-            catch (Exception)
+            catch (AnimeServiceException e)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error occured while creating new Episode");
+                logger.LogWarning(e.Message);
+                return StatusCode(e.StatusCode, e.Message);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e.Message);
+                return BadRequest(e.Message);
             }
         }
     }

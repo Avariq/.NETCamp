@@ -279,11 +279,11 @@
             }
         });
         jQuery.extend({
-            getArcId: function (arcName) {
+            getArcId: function (arcName, animeId) {
                 var id = -1;
                 $.ajax({
                     type: 'get',
-                    url: 'https://localhost:5001/api/Arc/GetArcId?arcName=' + arcName,
+                    url: 'https://localhost:5001/api/Arc/GetArcId?arcName=' + arcName + '&animeId=' + animeId,
                     dataType: 'json',
                     async: false,
                     success: function (data) {
@@ -379,8 +379,14 @@
                 $inputs.prop("disabled", false);
                 return;
             }
+            var animeId = $.getAnimeId(animeTitle);
+            var arcId = $.getArcId(arcTitle, animeId);
 
-            var arcId = $.getArcId(arcTitle);
+            if (arcId == -1) {
+                console.error("Invalid arc id");
+                $inputs.prop("disabled", false);
+                return;
+            }
 
             var epName = document.getElementById("ep-title").value.toString();
             var epLen = document.getElementById("ep-length").value;

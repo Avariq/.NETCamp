@@ -126,6 +126,12 @@ namespace AnimeLib.Services
                 .ToArray();
 
             int size = arcs.Length;
+
+            if (size == 0)
+            {
+                throw new NonexistentAnimeIdException(id);
+            }
+
             string[] titles = new string[size];
             for (int i = 0; i < size; ++i)
             {
@@ -134,20 +140,31 @@ namespace AnimeLib.Services
 
             return titles;
         }
-        public int GetArcId(string arcName)
+        public int GetArcId(string arcName, int animeId)
         {
             var arc = context.Arcs
                 .Where(a => a.Name.Equals(arcName))
-                .First();
+                .Where(a => a.AnimeId.Equals(animeId))
+                .SingleOrDefault();
+
+            if (arc == null)
+            {
+                throw new NonexistentArcNameException(arcName, animeId);
+            }
 
             return arc.Id;
         }
-        public Arc GetArcById(int id)
+        public Arc GetArcById(int arcId)
         {
             Arc arc = context.Arcs
-                .Where(a => a.Id.Equals(id))
+                .Where(a => a.Id.Equals(arcId))
                 .Include(a => a.Episodes)
-                .First();
+                .SingleOrDefault();
+
+            if (arc == null)
+            {
+                throw new NonexistentArcIdException(arcId);
+            }
 
             return arc;
         }
@@ -203,6 +220,13 @@ namespace AnimeLib.Services
         }
         public Arc CreateArc(Arc arc)
         {
+            var existingArcs = GetArcTitlesByAnimeId(arc.AnimeId);
+
+            if (existingArcs.Contains(arc.Name))
+            {
+                throw new ArcAlreadyExistsException(arc.Name, arc.AnimeId);
+            }
+
             using (var transaction = context.Database.BeginTransaction())
             {
                 try
@@ -213,19 +237,24 @@ namespace AnimeLib.Services
 
                     return arc;
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     transaction.Rollback();
-                    throw e.InnerException;
+                    throw;
                 }
             }
         }
 
-        public Episode GetEpisodeById(int id)
+        public Episode GetEpisodeById(int epId)
         {
             Episode ep = context.Episodes
-                .Where(e => e.Id.Equals(id))
-                .First();
+                .Where(e => e.Id.Equals(epId))
+                .SingleOrDefault();
+
+            if (ep == null)
+            {
+                throw new NonexistentEpisodeIdException(epId);
+            }
 
             return ep;
         }
@@ -235,32 +264,55 @@ namespace AnimeLib.Services
             var ep = context.Episodes
                 .Where(e => e.ArcId.Equals(arcId))
                 .Where(e => e.Name.Equals(epName))
-                .FirstOrDefault();
+                .SingleOrDefault();
+
             if (ep == null)
             {
-                return -1;
+                throw new NonexistentEpisodeException(arcId, epName);
             }
+
             return ep.Id;
+        }
+
+        public string[] GetEpisodeTitlesByArcId(int arcId)
+        {
+            var episodes = context.Episodes
+                .Where(ep => ep.ArcId.Equals(arcId))
+                .ToArray();
+
+            int size = episodes.Length;
+            string[] episodeTitles = new string[size];
+
+            for (int i = 0; i < size; i++)
+            {
+                episodeTitles[i] = episodes[i].Name;
+            }
+
+            return episodeTitles;
         }
 
         public Episode CreateEpisode(Episode episode)
         {
+            var existingEpisodes = GetEpisodeTitlesByArcId(episode.ArcId);
+
+            if (existingEpisodes.Contains(episode.Name))
+            {
+                throw new EpisodeAlreadyExistsException(episode.Name);
+            }
+
             using (var transaction = context.Database.BeginTransaction())
             {
                 try
                 {
                     context.Episodes.Add(episode);
-                    var arc = context.Arcs.Where(a => a.Id.Equals(episode.ArcId)).Single();
-                    var anime = context.Animes.Where(a => a.Id.Equals(arc.AnimeId)).Single();
-                    ++anime.Episodes;
                     context.SaveChanges();
                     transaction.Commit();
                     return episode;
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     transaction.Rollback();
-                    throw e.InnerException;
+                    throw;
                 }
             }
         }
@@ -344,70 +396,3 @@ namespace AnimeLib.Services
 
     }
 }
-
-
-
-/*int page = 1;
-int toSkip = 10 * (page - 1);
-int toTake = 10;
-
-FilterCliteria[] filters = new FilterCliteria[]
-{
-		//new FilterCliteria{Name = "min", TypeName="int", Value="100"},
-		//new FilterCliteria{Name = "max", TypeName="int", Value="105"},
-		new FilterCliteria{Name = "contains", TypeName="string", Value="3"}
-};
-
-//--------------
-
-IEnumerable<int> seq = Enumerable.Range(1, 100000);
-IEnumerable<string> data = seq.Select(x => $"{x}").ToArray();
-//--------------
-IEnumerable<string> result = data;
-
-var appliedMin = filters.SingleOrDefault(x => x.Name == "min");
-var appliedMax = filters.SingleOrDefault(x => x.Name == "max");
-var appliedContains = filters.SingleOrDefault(x => x.Name == "contains");
-
-if (appliedMin != null)
-    result = result.ApplyMin(appliedMin);
-
-if (appliedMax != null)
-    result = result.ApplyMax(appliedMax);
-
-if (appliedContains != null)
-    result = result.ApplyContainsText(appliedContains);
-
-
-result = result.Skip(toSkip).Take(toTake);
-result.Dump();
-}
-
-static class Filtermanager
-{
-    public static IEnumerable<string> ApplyMin(this IEnumerable<string> data, FilterCliteria filter)
-    {
-        int value = int.Parse(filter.Value);
-        return data.Where(x => int.Parse(x) >= value);
-    }
-
-    public static IEnumerable<string> ApplyMax(this IEnumerable<string> data, FilterCliteria filter)
-    {
-        int value = int.Parse(filter.Value);
-        return data.Where(x => int.Parse(x) <= value);
-    }
-
-    public static IEnumerable<string> ApplyContainsText(this IEnumerable<string> data, FilterCliteria filter)
-    {
-        string value = filter.Value;
-        return data.Where(x => x.Contains(value));
-    }
-}
-
-class FilterCliteria
-{
-    public string Name { get; set; }
-    public string TypeName { get; set; }
-    public string Value { get; set; }
-    public string PropertyName { get; set; }
-}*/

@@ -1,5 +1,6 @@
 ﻿using AnimeLib.Domain.DataAccess;
 using AnimeLib.Domain.Models;
+using AnimeLib.Services.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -24,6 +25,11 @@ namespace AnimeLib.Services
                 .Include(u => u.Role)
                 .Where(u => u.Username.Equals(username))
                 .SingleOrDefault();
+
+            if (user == null)
+            {
+                throw new NonexistentUserUsernameException(username);
+            }
 
             return user;
         }
