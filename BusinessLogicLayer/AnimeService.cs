@@ -248,22 +248,10 @@ namespace AnimeLib.Services
                 throw new ArcAlreadyExistsException(arc.Name, arc.AnimeId);
             }
 
-            using (var transaction = context.Database.BeginTransaction())
-            {
-                try
-                {
-                    context.Arcs.Add(arc);
-                    context.SaveChanges();
-                    transaction.Commit();
+            context.Arcs.Add(arc);
+            context.SaveChanges();
 
-                    return arc;
-                }
-                catch (Exception)
-                {
-                    transaction.Rollback();
-                    throw;
-                }
-            }
+            return arc;
         }
 
         public Episode GetEpisodeById(int epId)

@@ -174,7 +174,7 @@
             $('#ep-anime-title').blur(function () {
 
                 var animeTitle = document.getElementById('ep-anime-title').value;
-
+                animes = $.getAnimeTitles();
                 if (jQuery.inArray(animeTitle, animes) == -1) {
                     console.error("Such anime does not exist.");
                     return;
@@ -419,7 +419,6 @@
             console.log("Retrieved id: " + Id);
 
             var new_arc = $("#arc-arc-title").val().toString();
-            var arcs = $.getArcTitles(Id);
 
             var request = $.ajax({
                 headers: {
@@ -433,11 +432,11 @@
                 async: false,
                 data: JSON.stringify({ "animeId": Id, "name": new_arc })
             });
-            request.done(function (response, textStatus, jqXHR) {
+            request.done(function () {
                 console.log("NewArc: Success 201");
             });
 
-            request.fail(function (responce, textStatus, errorThrown) {
+            request.fail(function (responce) {
                 console.error(
                     "The following error occurred: " +
                     responce.responseText.split('.')[0].replace('"', "")
@@ -460,14 +459,7 @@
             var animeDescription = $('#anime-description').val().toString();
 
             var animeStatus = $("input:radio[name='status']:checked").val().toString();
-            var animeAgeRestriction = $("input:radio[name='ar']:checked").val().toString();
-
-            if (jQuery.inArray(animeName, animes) !== -1) {
-                console.error("Such anime does already exist.");
-                console.log(animeName);
-                $inputs.prop("disabled", false);
-                return;
-            }
+            var animeAgeRestriction = $("input:radio[name='ar']:checked").val().toString(); 
 
             var animeGenres = new Array();
             $.each($("input[name='anime-genre']:checked"), function () {
@@ -533,7 +525,7 @@
             request.fail(function (responce, textStatus, errorThrown) {
                 console.error(
                     "The following error occurred: " +
-                    responce.responseText.split('.')[0]
+                    responce.responseText.split('.')[0].replace('"', "")
                 );
             });
 
