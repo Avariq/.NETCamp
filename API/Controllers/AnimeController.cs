@@ -253,7 +253,7 @@ namespace AnimeLib.API.Controllers
             }
         }
 
-        /*[Authorize(Roles = "Admin")]*/
+        [Authorize(Roles = "Admin")]
         [HttpDelete(nameof(DeleteAnimeByTitle))]
         public IActionResult DeleteAnimeByTitle(string animeTitle)
         {

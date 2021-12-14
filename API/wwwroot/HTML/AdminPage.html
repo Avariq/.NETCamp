@@ -511,18 +511,6 @@
                 "Genres" : genresToReturn
             };
 
-            $.ajax({
-                headers: { 'Authorization': 'Bearer ' + localStorage.getItem('JwtToken') },
-                url: "https://localhost:5001/api/FileUpload",
-                data: formData,
-                processData: false,
-                contentType: false,
-                async: false,
-                type: "post",
-                success: function (data) {
-                    console.log("Posting");
-                }
-            });
             var request = $.ajax({
                 headers: {
                     'Accept': 'application/json',
@@ -537,6 +525,7 @@
             });
             request.done(function (response, textStatus, jqXHR) {
                 console.log("NewAnime: Success 201");
+                postImage(formData);
             });
 
             request.fail(function (responce, textStatus, errorThrown) {

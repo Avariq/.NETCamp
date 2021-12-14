@@ -24,4 +24,19 @@
 
     return animes;
 }
+
+function postImage(formData) {
+    $.ajax({
+        headers: { 'Authorization': 'Bearer ' + localStorage.getItem('JwtToken') },
+        url: "https://localhost:5001/api/FileUpload",
+        data: formData,
+        processData: false,
+        contentType: false,
+        async: false,
+        type: "post",
+        success: function (data) {
+            console.log("Posting");
+        }
+    });
+}
     
