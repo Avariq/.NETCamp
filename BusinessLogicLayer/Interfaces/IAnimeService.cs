@@ -25,5 +25,7 @@ namespace AnimeLib.Services
         int GetEpisodeId(int arcId, string epName);
         Anime[] GetRecent(int animeAmount, int pageNumber, int pageSize);
         int GetStatusId(string statusName);
+        Anime GetRandomAnime();
+        void DeleteAnimeByTitle(string animeTitle);
     }
 }

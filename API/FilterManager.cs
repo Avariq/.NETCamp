@@ -40,7 +40,7 @@ namespace AnimeLib.API
         }
         public static IQueryable<Anime> ApplyTitleContainsText(IQueryable<Anime> animeData, FilterBody filter)
         {
-            string textFragment = filter.Values[0];
+            string textFragment = filter.Values[0].Replace("%20", " ");
             return animeData.Where(a => a.Title.Contains(textFragment));
         }
 

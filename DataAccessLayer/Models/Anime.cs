@@ -27,7 +27,7 @@ namespace AnimeLib.Domain.Models
         [Required]
         public int Votes { get; set; } = 0;
         [Required]
-        [MaxLength(500)]
+        [MaxLength(1200)]
         [Column(TypeName = "varchar(500)")]
         public string Description { get; set; }
         [Required]

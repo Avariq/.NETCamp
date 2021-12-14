@@ -29,12 +29,34 @@ namespace AnimeLib.Domain.DataAccess
             modelBuilder.Entity<Anime>()
                 .Property(a => a.Views)
                 .HasDefaultValue(0);
+            modelBuilder.Entity<Anime>()
+                .HasIndex(a => a.Title)
+                .IsUnique();
+            modelBuilder.Entity<Status>()
+                .HasIndex(s => s.StatusName)
+                .IsUnique();
+            modelBuilder.Entity<AgeRestriction>()
+                .HasIndex(ar => ar.RestrictionCode)
+                .IsUnique();
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.Username)
                 .IsUnique();
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.Email)
                 .IsUnique();
+            modelBuilder.Entity<User>()
+                .HasData(new User { 
+                    Id = 1,
+                    Username = "balvaron", 
+                    PasswordHash = "ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f", 
+                    Email = "some.email@gmail.com", 
+                    RoleId = 1 });
+            modelBuilder.Entity<UserRole>()
+                .HasData(new UserRole
+                {
+                    Id = 1,
+                    Role = "Admin"
+                });
         }
     }
 }

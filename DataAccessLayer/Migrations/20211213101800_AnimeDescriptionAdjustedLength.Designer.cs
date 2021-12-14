@@ -3,14 +3,16 @@ using AnimeLib.Domain.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AnimeLib.Domain.Migrations
 {
     [DbContext(typeof(AnimeContext))]
-    partial class AnimeContextModelSnapshot : ModelSnapshot
+    [Migration("20211213101800_AnimeDescriptionAdjustedLength")]
+    partial class AnimeDescriptionAdjustedLength
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -235,16 +237,6 @@ namespace AnimeLib.Domain.Migrations
                         .IsUnique();
 
                     b.ToTable("Users");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Email = "some.email@gmail.com",
-                            PasswordHash = "ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f",
-                            RoleId = 1,
-                            Username = "balvaron"
-                        });
                 });
 
             modelBuilder.Entity("AnimeLib.Domain.Models.UserRole", b =>
@@ -262,13 +254,6 @@ namespace AnimeLib.Domain.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("UserRoles");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Role = "Admin"
-                        });
                 });
 
             modelBuilder.Entity("AnimeLib.Domain.Models.Anime", b =>

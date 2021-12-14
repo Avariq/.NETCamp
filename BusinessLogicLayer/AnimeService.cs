@@ -1,6 +1,7 @@
 ﻿using AnimeLib.Domain.DataAccess;
 using AnimeLib.Domain.Models;
 using AnimeLib.Services.Exceptions;
+using AnimeLib.Services.Exceptions.Root_exceptions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -117,6 +118,22 @@ namespace AnimeLib.Services
             }
 
             return titles;
+        }
+
+        public void DeleteAnimeByTitle(string animeTitle)
+        {
+            var animeToRemove = context.Animes
+                .Include(a => a.Genres)
+                .Include(a => a.Arcs)
+                .ThenInclude(a => a.Episodes)
+                .Where(a => a.Title.Equals(animeTitle))
+                .SingleOrDefault();
+
+            if (animeToRemove != null)
+            {
+                context.Remove(animeToRemove);
+                context.SaveChanges();
+            }    
         }
 
         public string[] GetArcTitlesByAnimeId(int id)
@@ -280,6 +297,12 @@ namespace AnimeLib.Services
 
         public string[] GetEpisodeTitlesByArcId(int arcId)
         {
+            Arc arc = GetArcById(arcId);
+            if (arc == null)
+            {
+                throw new NonexistentArcIdException(arcId);
+            }
+            
             var episodes = context.Episodes
                 .Where(ep => ep.ArcId.Equals(arcId))
                 .ToArray();
@@ -304,21 +327,9 @@ namespace AnimeLib.Services
                 throw new EpisodeAlreadyExistsException(episode.Name);
             }
 
-            using (var transaction = context.Database.BeginTransaction())
-            {
-                try
-                {
-                    context.Episodes.Add(episode);
-                    context.SaveChanges();
-                    transaction.Commit();
-                    return episode;
-                }
-                catch (Exception)
-                {
-                    transaction.Rollback();
-                    throw;
-                }
-            }
+            context.Episodes.Add(episode);
+            context.SaveChanges();
+            return episode;
         }
 
         public int GetStatusId(string statusName)
@@ -396,6 +407,20 @@ namespace AnimeLib.Services
             }
 
             return ids;
+        }
+
+        public Anime GetRandomAnime()
+        {
+            Random random = new Random();
+            int animeAmount = GetAnimeAmount();
+            int toSkip = random.Next(0, animeAmount);
+
+            var anime = context.Animes
+                .Skip(toSkip)
+                .Take(1)
+                .SingleOrDefault();
+
+            return anime;
         }
 
     }

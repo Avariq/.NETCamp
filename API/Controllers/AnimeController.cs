@@ -1,4 +1,5 @@
 ﻿using AnimeLib.API.Models;
+using AnimeLib.API.Models.Input;
 using AnimeLib.API.Models.Output;
 using AnimeLib.Domain.DataAccess;
 using AnimeLib.Domain.Models;
@@ -67,16 +68,22 @@ namespace AnimeLib.API.Controllers
 
         [HttpPost(nameof(GetByFilter))]
         [AllowAnonymous]
-        public IActionResult GetByFilter([FromBody] FilterBody[] filters)
+        public IActionResult GetByFilter([FromBody] FilterPageDto filterArgs)
         {
             try
             {
+                logger.LogInformation("Getting animes by filters");
+
                 IQueryable<Anime> animeData = animeService.GetAllAnimesQueryable();
 
-                foreach (FilterBody filter in filters)
+                foreach (FilterBody filter in filterArgs.Filters)
                 {
                     animeData = animeData.Apply(filter);
                 }
+
+                animeData = animeData
+                    .Skip(3)
+                    .Take(3);
 
                 return Ok(animeData.ToArray());
             }
@@ -231,6 +238,39 @@ namespace AnimeLib.API.Controllers
             var genres = animeService.GetAllGenres();
 
             return Ok(genres);
+        }
+
+        [HttpGet(nameof(GetRandomAnime))]
+        [AllowAnonymous]
+        public IActionResult GetRandomAnime()
+        {
+            try
+            {
+                var anime = animeService.GetRandomAnime();
+                return Ok(anime);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e.Message);
+                return BadRequest(e.Message);
+            }
+        }
+
+        /*[Authorize(Roles = "Admin")]*/
+        [HttpDelete(nameof(DeleteAnimeByTitle))]
+        public IActionResult DeleteAnimeByTitle(string animeTitle)
+        {
+            try
+            {
+                logger.LogInformation("Deleting anime");
+                animeService.DeleteAnimeByTitle(animeTitle);
+                return Ok();
+            }
+            catch (Exception)
+            {
+                logger.LogWarning("Unsuccessful");
+                return BadRequest("Invalid paramaters");
+            }
         }
     }
 }
