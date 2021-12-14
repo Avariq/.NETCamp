@@ -68,7 +68,7 @@ namespace AnimeLib.API.Controllers
 
         [HttpPost(nameof(GetByFilter))]
         [AllowAnonymous]
-        public IActionResult GetByFilter([FromBody] FilterPageDto filterArgs)
+        public IActionResult GetByFilter([FromBody] FilterBody[] filters)
         {
             try
             {
@@ -76,14 +76,10 @@ namespace AnimeLib.API.Controllers
 
                 IQueryable<Anime> animeData = animeService.GetAllAnimesQueryable();
 
-                foreach (FilterBody filter in filterArgs.Filters)
+                foreach (FilterBody filter in filters)
                 {
                     animeData = animeData.Apply(filter);
                 }
-
-                animeData = animeData
-                    .Skip(3)
-                    .Take(3);
 
                 return Ok(animeData.ToArray());
             }
