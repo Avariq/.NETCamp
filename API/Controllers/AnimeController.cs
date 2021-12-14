@@ -123,6 +123,7 @@ namespace AnimeLib.API.Controllers
         [AllowAnonymous]
         public IActionResult GetAnimeTitles()
         {
+            logger.LogInformation("Anime titles are retrieved");
             string[] titles = animeService.GetAllAnimeTitles();
 
             return Ok(titles);

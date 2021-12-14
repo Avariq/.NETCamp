@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="//code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
     <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
+    <script src="../JS/AdminPage.js"></script>
 </head>
 <body>
     <header class="header">
@@ -91,7 +92,7 @@
             <div class="new-arc-block">
                 <form id="new-arc-form">
                     <div class="arc-anime-title">
-                        <label>Anime:<input id="arc-anime-title" type="text" /></label>
+                        <label>Anime:<input autocomplete="off" id="arc-anime-title" type="text" class="autofill-anime-title" /></label>
                     </div>
                     <div class="arc-arc-title">
                         <label>New Arc:<input id="arc-arc-title" type="text" /></label>
@@ -107,7 +108,7 @@
             <form id="new-episode-form">
                 <div class="new-episode-block">
                     <div class="ep-anime-block">
-                        <label>Anime name:<input id="ep-anime-title" type="text" /></label>
+                        <label>Anime name:<input id="ep-anime-title" type="text" class="autofill-anime-title" /></label>
                         <label>Arc name:<input id="ep-arc-title" type="text" /></label>
                     </div>
                     <div class="ep-episode-block">
@@ -123,6 +124,13 @@
     </div>
 
     <script type="text/javascript">
+
+        function filterBody(name, tname, values, pname) {
+            this.Name = name;
+            this.TypeName = tname;
+            this.Values = values;
+            this.PropertyName = pname;
+        }
 
         jQuery.extend({
             getAllGenres: function () {
@@ -144,7 +152,7 @@
         });
 
         var genres = null;
-        var animes = null;
+        var animes = [];
 
         var timer;
 
@@ -152,34 +160,43 @@
             setExpiration();
             timer = window.setInterval(refreshExpiration, 5000);
             genres = $.getAllGenres();
-            animes = $.getAnimeTitles();
             display_genres();
-            fieldsAutoComplete();
         })
 
+        $('.autofill-anime-title').keypress(function () {
+            if ($(this).val().length > 2 && $(this).val().length <= 4) {
+                var titleContainsTextFilter = new filterBody("TitleContainsText", "string", [$(this).val().toString()], "some");
+                var filters = []
+                filters.push(titleContainsTextFilter)
+                animes = []
+                animesJson = getAnimesByFilter(filters);
+                for (var i = 0; i < animesJson.length; i++) {
+                    animes.push(animesJson[i].title);
+                }
+                fieldsAutoComplete()
+            }
+        });
+
         function fieldsAutoComplete() {
+
             $('#arc-anime-title').autocomplete({
                 source: animes,
-                minLength: 3
+                minLength: 2
             });
 
             var arcs = null;
 
-            $('#ep-anime-title').autocomplete
-                ({
-                    source: animes,
-                    minLength: 3
-                })
+            $('#ep-anime-title').autocomplete({
+                source: animes,
+                minLength: 2
+            });
 
             $('#ep-anime-title').blur(function () {
-
                 var animeTitle = document.getElementById('ep-anime-title').value;
-                animes = $.getAnimeTitles();
                 if (jQuery.inArray(animeTitle, animes) == -1) {
                     console.error("Such anime does not exist.");
                     return;
                 }
-
                 var Id = $.getAnimeId(animeTitle);
                 arcs = $.getArcTitles(Id);
                 $('#ep-arc-title').autocomplete
