@@ -14,11 +14,11 @@ namespace AnimeLib.Services
         int[] GetAllARIds();
         int[] GetAllGenreIds();
         Genre[] GetAllGenres();
+        (IQueryable<T>, int, int) Paginate<T>(IQueryable<T> items, int pageSize, int pageNumber);
         int[] GetAllStatusIds();
         int GetAnimeAmount();
         Anime GetAnimeById(int id);
         int GetAnimeId(string title);
-        (int, int, int) GetPaginationValues(int totalItemsAmount, int pageSize, int pageNumber);
         Arc GetArcById(int id);
         int GetArcId(string arcName, int animeId);
         string[] GetArcTitlesByAnimeId(int id);

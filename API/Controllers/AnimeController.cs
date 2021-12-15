@@ -65,20 +65,29 @@ namespace AnimeLib.API.Controllers
 
         [HttpPost(nameof(GetByFilter))]
         [AllowAnonymous]
-        public IActionResult GetByFilter([FromBody] FilterBody[] filters)
+        public IActionResult GetByFilter([FromBody] FilterPageDto filterPageArgs)
         {
             try
             {
                 logger.LogInformation("Getting animes by filters");
 
+                PageArgs pageArgs = filterPageArgs.PageArguments;
+                AnimeArgsOut animesOutput = new AnimeArgsOut();
+
                 IQueryable<Anime> animeData = animeService.GetAllAnimesQueryable();
 
-                foreach (FilterBody filter in filters)
+                foreach (FilterBody filter in filterPageArgs.Filters)
                 {
                     animeData = animeData.Apply(filter);
                 }
 
-                return Ok(animeData.ToArray());
+                var paginationOutput = animeService.Paginate(animeData, pageArgs.pageSize, pageArgs.pageNumber);
+
+                animesOutput.animes = paginationOutput.Item1.ToArray();
+                animesOutput.totalPagesAmount = paginationOutput.Item2;
+                animesOutput.totalAnimesFound = paginationOutput.Item3;
+
+                return Ok(animesOutput);
             }
             catch (AnimeServiceException e)
             {

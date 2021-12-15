@@ -10,5 +10,6 @@ namespace AnimeLib.API.Models.Output
     {
         public Anime[] animes { get; set; }
         public int totalPagesAmount { get; set; }
+        public int totalAnimesFound { get; set; }
     }
 }

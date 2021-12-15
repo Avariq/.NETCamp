@@ -20,8 +20,10 @@ namespace AnimeLib.Services
             context = _context;
         }
 
-        public (int, int, int) GetPaginationValues(int totalItemsAmount, int pageSize, int pageNumber)
+        protected (int, int, int, int) GetPaginationValues<T>(IQueryable<T> items, int pageSize, int pageNumber)
         {
+            int totalItemsAmount = items.Count();
+
             if (pageNumber < 1 || pageSize < 1)
             {
                 throw new InvalidPageArgumentsException();
@@ -32,7 +34,7 @@ namespace AnimeLib.Services
             int toSkip = (pageNumber - 1) * pageSize;
             int toTake = pageSize;
             
-            return (toSkip, toTake, totalPages);
+            return (toSkip, toTake, totalPages, totalItemsAmount);
         }
 
         public int GetAnimeAmount()
@@ -43,32 +45,25 @@ namespace AnimeLib.Services
             return amount;
         }
 
-        protected IQueryable<Anime> GetAnimesPaginated(int toTake, int toSkip)
+        public (IQueryable<T>, int, int) Paginate<T>(IQueryable<T> items, int pageSize, int pageNumber)
         {
-            var animes = context.Animes
-                .Include(s => s.Status)
-                .Include(rs => rs.AgeRestriction)
-                .Include(a => a.Genres)
-                .ThenInclude(a => a.Genre)
-                .Include(arc => arc.Arcs)
-                .ThenInclude(ep => ep.Episodes)
-                .OrderByDescending(a => a.Id)
+            (int toSkip, int toTake, int totalPages, int totalItemsAmount) = GetPaginationValues(items, pageSize, pageNumber);
+
+            items = items
                 .Skip(toSkip)
                 .Take(toTake);
 
-            return animes;
+            return (items, totalPages, totalItemsAmount);
         }
 
         public (Anime[], int) GetRecent(int pageNumber, int pageSize)
         {
-            int animeAmount = GetAnimeAmount();
+            var animes = GetAllAnimesQueryable()
+                .OrderByDescending(a => a.Id);
 
-            (int toSkip, int toTake, int totalPages) = GetPaginationValues(animeAmount, pageSize, pageNumber);
+            (IQueryable<Anime> animesToReturn, int totalPages, int totalItemsFound) = Paginate(animes, pageSize, pageNumber);
 
-            var animes = GetAnimesPaginated(toTake, toSkip).ToArray();
-            
-
-            return (animes, totalPages);
+            return (animesToReturn.ToArray(), totalPages);
         }
 
         public IQueryable<Anime> GetAllAnimesQueryable()
@@ -88,9 +83,6 @@ namespace AnimeLib.Services
                     genre.Genre.Animes = null;
                 }
             }
-
-            /*string.IsNullOrWhiteSpace(stringnem)*/
-            /*int.HasValue*/
 
             return animes;
         }

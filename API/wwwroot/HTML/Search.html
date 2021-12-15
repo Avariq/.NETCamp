@@ -60,6 +60,16 @@
             }
         });
 
+        function GeneratePageArgs() {
+            var vars = $.getUrlVars();
+
+            var pageNumber = vars["page"][0];
+            var pageSize = 8;
+            var pageArguments = { "pageNumber": pageNumber, "pageSize": pageSize };
+
+            return pageArguments;
+        }
+
         function ConstructFilters() {
             var filters = []
             function filterBody(name, tname, values, pname) {
@@ -70,6 +80,7 @@
             }
             var vars = $.getUrlVars();
             console.log(vars);
+
             var titlefragment = vars["titleFragment"];
             var statusIds = vars["statusIds"];
             var yearFrom = vars["from_year"];
@@ -123,13 +134,18 @@
             return filters;
         }
 
-        function displaySearchResults(animes) {
-            var foundTotal = animes.length;
+        function displayPages(pageCount) {
+            for (var i = 0; i < pageCount; i++) {
+                $("#pagination-block").append('<a href="' + localStorage.getItem("FilterUrl") + '&page=' + (i + 1) + '">' + (i + 1) + '</a>');
+            }
+        }
+
+        function displaySearchResults(animes, totalAnimesAmount) {
+            var foundTotal = totalAnimesAmount;
             $("#search-result").text(foundTotal + " Animes found");
 
             for (var i = 0; i < foundTotal; i++) {
                 var elem = animes[i];
-                console.log(elem.title);
                 var html = '';
                 html += '<div class="preview-block">';
                 html += '<a href="https://localhost:5001/HTML/Anime.html?Id=' + elem.id + '">';
@@ -172,6 +188,8 @@
         }
 
         var animesToDisplay = null;
+        var pageAmount = 0;
+        var totalAnimesRetrieved;
         var timer;
 
         $(document).ready(function () {
@@ -179,6 +197,8 @@
             timer = window.setInterval(refreshExpiration, 5000);
 
             var filters = ConstructFilters();
+            var pageArguments = GeneratePageArgs();
+
             console.log("Filters", filters);
             var request = $.ajax({
                 headers: {
@@ -189,21 +209,24 @@
                 type: "post",
                 dataType: "json",
                 async: false,
-                data: JSON.stringify(filters)
+                data: JSON.stringify({ "pageArguments": pageArguments, "filters": filters })
             });
             request.done(function (response, textStatus, jqXHR) {
-                animesToDisplay = response;
+                animesToDisplay = response.animes;
+                pageAmount = response.totalPagesAmount;
+                totalAnimesRetrieved = response.totalAnimesFound;
+                console.log(response);
             });
 
-            request.fail(function (jqXHR, textStatus, errorThrown) {
+            request.fail(function (responce, textStatus, errorThrown) {
                 console.error(
                     "The following error occurred: " +
-                    textStatus, errorThrown
+                    responce.responseText
                 );
             });
 
-            displaySearchResults(animesToDisplay);
-            
+            displayPages(pageAmount);
+            displaySearchResults(animesToDisplay, totalAnimesRetrieved);
         })
 
     </script>
