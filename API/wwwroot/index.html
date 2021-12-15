@@ -214,7 +214,8 @@
                 function onSuccess(jsonData) {
                     obj = jsonData;
                     data = Object.entries(jsonData);
-                    var pageCount = Math.ceil(data[1][1] / animePerPage);
+                    console.log("json", jsonData);
+                    var pageCount = jsonData.totalPagesAmount;
                     $.displayPages(pageCount);
                     for (var i = 0; i < data[0][1].length; i++) {
                         var elem = data[0][1][i];

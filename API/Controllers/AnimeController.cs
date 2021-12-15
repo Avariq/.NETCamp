@@ -44,11 +44,8 @@ namespace AnimeLib.API.Controllers
                 logger.LogInformation("Getting recent animes");
 
                 AnimeArgsOut animesOutput = new();
-                int animeAmount = animeService.GetAnimeAmount();
 
-
-                animesOutput.animes = animeService.GetRecent(animeAmount, pageArgs.pageNumber, pageArgs.pageSize);
-                animesOutput.totalAmount = animeAmount;
+                (animesOutput.animes, animesOutput.totalPagesAmount) = animeService.GetRecent(pageArgs.pageNumber, pageArgs.pageSize);
 
                 logger.LogInformation("Successfully got recent animes");
                 return Ok(animesOutput);

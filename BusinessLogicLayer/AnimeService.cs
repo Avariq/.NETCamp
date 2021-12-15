@@ -20,6 +20,21 @@ namespace AnimeLib.Services
             context = _context;
         }
 
+        public (int, int, int) GetPaginationValues(int totalItemsAmount, int pageSize, int pageNumber)
+        {
+            if (pageNumber < 1 || pageSize < 1)
+            {
+                throw new InvalidPageArgumentsException();
+            }
+
+            int totalPages = (int)Math.Ceiling((double)totalItemsAmount / (double)pageSize);
+
+            int toSkip = (pageNumber - 1) * pageSize;
+            int toTake = pageSize;
+            
+            return (toSkip, toTake, totalPages);
+        }
+
         public int GetAnimeAmount()
         {
             var amount = context.Animes
@@ -37,39 +52,23 @@ namespace AnimeLib.Services
                 .ThenInclude(a => a.Genre)
                 .Include(arc => arc.Arcs)
                 .ThenInclude(ep => ep.Episodes)
+                .OrderByDescending(a => a.Id)
                 .Skip(toSkip)
-                .Take(toTake)
-                .OrderByDescending(a => a.Id);
+                .Take(toTake);
 
             return animes;
         }
 
-        public Anime[] GetRecent(int animeAmount, int pageNumber, int pageSize)
+        public (Anime[], int) GetRecent(int pageNumber, int pageSize)
         {
-            int totalPages = (int)Math.Ceiling((double)animeAmount / (double)pageSize);
+            int animeAmount = GetAnimeAmount();
 
-            int toSkip = (totalPages - pageNumber) * pageSize;
-            int toTake = pageSize;
-
-            if (pageNumber < 1 || pageSize < 1)
-            {
-                throw new InvalidPageArgumentsException();
-            }
-
-            if (pageNumber == 1)
-            {
-                toSkip = animeAmount - pageSize;
-            }
-
-            if (toSkip == 0)
-            {
-                toTake = animeAmount - (pageNumber - 1) * pageSize;
-            }
+            (int toSkip, int toTake, int totalPages) = GetPaginationValues(animeAmount, pageSize, pageNumber);
 
             var animes = GetAnimesPaginated(toTake, toSkip).ToArray();
             
 
-            return animes;
+            return (animes, totalPages);
         }
 
         public IQueryable<Anime> GetAllAnimesQueryable()

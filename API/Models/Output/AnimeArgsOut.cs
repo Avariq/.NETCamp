@@ -9,6 +9,6 @@ namespace AnimeLib.API.Models.Output
     public class AnimeArgsOut
     {
         public Anime[] animes { get; set; }
-        public int totalAmount { get; set; }
+        public int totalPagesAmount { get; set; }
     }
 }

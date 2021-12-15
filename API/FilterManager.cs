@@ -36,7 +36,6 @@ namespace AnimeLib.API
                 throw new NonexistentFilterNameException(filter.Name);
             }
             
-            
         }
         public static IQueryable<Anime> ApplyTitleContainsText(IQueryable<Anime> animeData, FilterBody filter)
         {

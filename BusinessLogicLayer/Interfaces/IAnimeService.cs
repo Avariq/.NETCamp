@@ -18,12 +18,13 @@ namespace AnimeLib.Services
         int GetAnimeAmount();
         Anime GetAnimeById(int id);
         int GetAnimeId(string title);
+        (int, int, int) GetPaginationValues(int totalItemsAmount, int pageSize, int pageNumber);
         Arc GetArcById(int id);
         int GetArcId(string arcName, int animeId);
         string[] GetArcTitlesByAnimeId(int id);
         Episode GetEpisodeById(int id);
         int GetEpisodeId(int arcId, string epName);
-        Anime[] GetRecent(int animeAmount, int pageNumber, int pageSize);
+        (Anime[], int) GetRecent(int pageNumber, int pageSize);
         int GetStatusId(string statusName);
         Anime GetRandomAnime();
         void DeleteAnimeByTitle(string animeTitle);
