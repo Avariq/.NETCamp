@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace AnimeLib.Services.Exceptions
 {
-    public class NonexistentUserUsernameException : UserServiceException
+    public class InvalidEmailAddressException : UserServiceException
     {
-        public NonexistentUserUsernameException(string username) : base($"User not found. Username: {username}", 404) { }
+        public InvalidEmailAddressException(string email) : base($"Provided email address is not valid. Email: {email}", 400) { }
     }
 }

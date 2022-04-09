@@ -7,6 +7,7 @@ using AnimeLib.Services;
 using AnimeLib.Services.Exceptions.Root_exceptions;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -81,12 +82,20 @@ namespace AnimeLib.API.Controllers
                     animeData = animeData.Apply(filter);
                 }
 
-                var paginationOutput = animeService.Paginate(animeData, pageArgs.pageSize, pageArgs.pageNumber);
+                if (pageArgs != null)
+                {
+                    var paginationOutput = animeService.Paginate(animeData, pageArgs.pageSize, pageArgs.pageNumber);
 
-                animesOutput.animes = paginationOutput.Item1.ToArray();
-                animesOutput.totalPagesAmount = paginationOutput.Item2;
-                animesOutput.totalAnimesFound = paginationOutput.Item3;
+                    animesOutput.animes = paginationOutput.Item1.ToArray();
+                    animesOutput.totalPagesAmount = paginationOutput.Item2;
+                    animesOutput.totalAnimesFound = paginationOutput.Item3;
+                }
+                else
+                {
+                    animesOutput.animes = animeData.ToArray();
+                }
 
+                
                 return Ok(animesOutput);
             }
             catch (AnimeServiceException e)

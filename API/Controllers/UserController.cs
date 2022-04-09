@@ -33,6 +33,53 @@ namespace AnimeLib.API.Controllers
             jwtAuthManager = _jwtAuthManager;
         }
 
+        [HttpPost(nameof(SignUp))]
+        [AllowAnonymous]
+        public IActionResult SignUp([FromBody] UserDto newUserData)
+        {
+            try
+            {
+                logger.LogInformation("Creating new user.");
+                User createdUser = userService.CreateUser(newUserData.Username, newUserData.Email, newUserData.PasswordHash);
+
+                return CreatedAtAction(nameof(GetUserById), new { id = createdUser.Id }, createdUser);
+            }
+            catch (UserServiceException e)
+            {
+                logger.LogWarning(e.Message);
+                return StatusCode(e.StatusCode, e.Message);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e.Message);
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpGet(nameof(GetUserById))]
+        [AllowAnonymous]
+        public IActionResult GetUserById(int userId)
+        {
+            try
+            {
+                logger.LogInformation($"Getting user by id: {userId}");
+                User user = userService.GetUserById(userId);
+
+                return Ok(user);
+
+            }
+            catch (UserServiceException e)
+            {
+                logger.LogWarning(e.Message);
+                return StatusCode(e.StatusCode, e.Message);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e.Message);
+                return BadRequest(e.Message);
+            }
+        }
+
         [HttpPost(nameof(Login))]
         [AllowAnonymous]
         public IActionResult Login([FromBody] UserCredentials userCredentials)

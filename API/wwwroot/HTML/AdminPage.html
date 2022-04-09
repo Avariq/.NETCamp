@@ -170,9 +170,11 @@
                 filters.push(titleContainsTextFilter)
                 animes = []
                 animesJson = getAnimesByFilter(filters);
-                for (var i = 0; i < animesJson.length; i++) {
-                    animes.push(animesJson[i].title);
+                console.log(animesJson);
+                for (var i = 0; i < animesJson.animes.length; i++) {
+                    animes.push(animesJson.animes[i].title);
                 }
+                console.log(animes);
                 fieldsAutoComplete()
             }
         });

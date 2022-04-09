@@ -3,14 +3,16 @@ using AnimeLib.Domain.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AnimeLib.Domain.Migrations
 {
     [DbContext(typeof(AnimeContext))]
-    partial class AnimeContextModelSnapshot : ModelSnapshot
+    [Migration("20220327120605_StatusesAndAgeRestrictionsDataSeed")]
+    partial class StatusesAndAgeRestrictionsDataSeed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -124,22 +126,6 @@ namespace AnimeLib.Domain.Migrations
                         .IsUnique();
 
                     b.ToTable("Animes");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            AgeRestrictionId = 3,
-                            Description = "Bleach is a Japanese manga series written and illustrated by Tite Kubo. It follows the adventures of the hotheaded teenager Ichigo Kurosaki, who inherits his parents' destiny after he obtains the powers of a Soul Reaper—a death personification similar to the Grim Reaper—from another Soul Reaper, Rukia Kuchiki. His new-found powers force him to take on the duties of defending humans from evil spirits and guiding departed souls to the afterlife, and set him on journeys to various ghostly realms of existence.",
-                            Episodes = 0,
-                            Image = "Images/bleach.jpg",
-                            Rating = 0f,
-                            StatusId = 2,
-                            Title = "Bleach",
-                            Views = 0,
-                            Votes = 0,
-                            Year = 2001
-                        });
                 });
 
             modelBuilder.Entity("AnimeLib.Domain.Models.AnimeGenre", b =>
@@ -155,13 +141,6 @@ namespace AnimeLib.Domain.Migrations
                     b.HasIndex("AnimeId");
 
                     b.ToTable("AnimeGenre");
-
-                    b.HasData(
-                        new
-                        {
-                            GenreId = 1,
-                            AnimeId = 1
-                        });
                 });
 
             modelBuilder.Entity("AnimeLib.Domain.Models.Arc", b =>
@@ -226,13 +205,6 @@ namespace AnimeLib.Domain.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Genres");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Seinen"
-                        });
                 });
 
             modelBuilder.Entity("AnimeLib.Domain.Models.Status", b =>

@@ -57,6 +57,40 @@ namespace AnimeLib.Domain.DataAccess
                     Id = 1,
                     Role = "Admin"
                 });
+            modelBuilder.Entity<AgeRestriction>()
+                .HasData(
+                    new AgeRestriction { Id = 1, RestrictionCode = "G", AgeRequired = 0 },
+                    new AgeRestriction { Id = 2, RestrictionCode = "PG12", AgeRequired = 12 },
+                    new AgeRestriction { Id = 3, RestrictionCode = "R15", AgeRequired = 15 },
+                    new AgeRestriction { Id = 4, RestrictionCode = "R18", AgeRequired = 18 });
+            modelBuilder.Entity<Status>()
+                .HasData(
+                    new Status { Id = 1, StatusName = "Ongoing" },
+                    new Status { Id = 2, StatusName = "Released" },
+                    new Status { Id = 3, StatusName = "Announced" }
+                );
+            modelBuilder.Entity<Genre>()
+                .HasData(
+                    new Genre { Id = 1, Name = "Seinen" }
+                );
+            modelBuilder.Entity<Anime>()
+                .HasData(
+                    new Anime
+                    {
+                        Id = 1,
+                        Title = "Bleach",
+                        Description = "Bleach is a Japanese manga series written and illustrated by Tite Kubo. It follows the adventures of the hotheaded teenager Ichigo Kurosaki, who inherits his parents' destiny after he obtains the powers of a Soul Reaper—a death personification similar to the Grim Reaper—from another Soul Reaper, Rukia Kuchiki. His new-found powers force him to take on the duties of defending humans from evil spirits and guiding departed souls to the afterlife, and set him on journeys to various ghostly realms of existence.",
+                        Image = "Images/bleach.jpg",
+                        StatusId = 2,
+                        AgeRestrictionId = 3,
+                        Year = 2001
+                    }
+                );
+            modelBuilder.Entity<AnimeGenre>()
+                .HasData(
+                    new AnimeGenre { AnimeId = 1, GenreId = 1 }
+                );
+
         }
     }
 }
