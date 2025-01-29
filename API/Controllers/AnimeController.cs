@@ -61,7 +61,6 @@ namespace AnimeLib.API.Controllers
                 logger.LogError(e.Message);
                 return BadRequest(e.Message);
             }
-
         }
 
         [HttpPost(nameof(GetByFilter))]
@@ -95,7 +94,6 @@ namespace AnimeLib.API.Controllers
                     animesOutput.animes = animeData.ToArray();
                 }
 
-                
                 return Ok(animesOutput);
             }
             catch (AnimeServiceException e)
@@ -108,7 +106,6 @@ namespace AnimeLib.API.Controllers
                 logger.LogError(e.Message);
                 return BadRequest(e.Message);
             }
-            
         }
 
         [HttpGet(nameof(GetAnimeIdByTitle))]
@@ -193,6 +190,7 @@ namespace AnimeLib.API.Controllers
             catch (Exception e)
             {
                 logger.LogError(e.Message);
+                logger.LogError(e.InnerException.Message);
                 return BadRequest(e.Message);
             }
         }
@@ -268,7 +266,7 @@ namespace AnimeLib.API.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
+        
         [HttpDelete(nameof(DeleteAnimeByTitle))]
         public IActionResult DeleteAnimeByTitle(string animeTitle)
         {

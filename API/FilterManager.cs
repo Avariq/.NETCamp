@@ -23,7 +23,6 @@ namespace AnimeLib.API
                 ["OrderAscending"] = ApplyOrderAscending,
                 ["OrderDescending"] = ApplyOrderDescending,
             };
-
         public static IQueryable<Anime> Apply(this IQueryable<Anime> animes, FilterBody filter)
         {
             if (filterMapper.TryGetValue(filter.Name, out var filterHandler))

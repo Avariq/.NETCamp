@@ -55,7 +55,6 @@ namespace AnimeLib.Services
 
             return (items, totalPages, totalItemsAmount);
         }
-
         public (Anime[], int) GetRecent(int pageNumber, int pageSize)
         {
             var animes = GetAllAnimesQueryable()
@@ -76,6 +75,7 @@ namespace AnimeLib.Services
                 .Include(arc => arc.Arcs)
                 .ThenInclude(ep => ep.Episodes);
 
+
             foreach (var anime in animes)
             {
                 foreach (var genre in anime.Genres)
@@ -83,7 +83,6 @@ namespace AnimeLib.Services
                     genre.Genre.Animes = null;
                 }
             }
-
             return animes;
         }
 
@@ -92,6 +91,7 @@ namespace AnimeLib.Services
             var anime = context.Animes
                 .Where(a => a.Title.Equals(title))
                 .First();
+
             return anime.Id;
         }
 
@@ -226,7 +226,7 @@ namespace AnimeLib.Services
                 catch (Exception)
                 {
                     transaction.Rollback();
-                    throw new AnimeCreationException();
+                    throw;
                 }
             }
         }

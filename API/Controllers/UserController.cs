@@ -4,10 +4,14 @@ using AnimeLib.Domain.Models;
 using AnimeLib.Services;
 using AnimeLib.Services.Exceptions.Root_exceptions;
 using AutoMapper;
+using MailKit.Net.Smtp;
+using MailKit.Security;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using MimeKit;
+using MimeKit.Text;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -123,6 +127,93 @@ namespace AnimeLib.API.Controllers
 
             string updatedJwtToken = jwtAuthManager.FetchToken(user);
             return Ok(updatedJwtToken);
+        }
+
+        [AllowAnonymous]
+        [HttpPost(nameof(SendTestEmailHotmail))]
+        public async Task<IActionResult> SendTestEmailHotmail()
+        {
+            try
+            {
+                var email = new MimeMessage();
+                email.From.Add(MailboxAddress.Parse("sportshub.service@hotmail.com"));
+                email.To.Add(MailboxAddress.Parse("nickyr.beast@gmail.com"));
+                email.Subject = "Test Email Subject";
+                email.Body = new TextPart(TextFormat.Plain) { Text = "Example Plain Text Message Body" };
+
+                // send email
+                using var smtp = new SmtpClient();
+                smtp.Connect("smtp.live.com", 587, SecureSocketOptions.StartTls);
+                smtp.Authenticate("sportshub.service@hotmail.com", "steamisjustavaporizedwater123");
+
+                await smtp.SendAsync(email);
+
+                smtp.Disconnect(true);
+
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpPost(nameof(SendTestEmailYahoo))]
+        public async Task<IActionResult> SendTestEmailYahoo()
+        {
+            try
+            {
+                var email = new MimeMessage();
+                email.From.Add(MailboxAddress.Parse("sportshub.service@yahoo.com"));
+                email.To.Add(MailboxAddress.Parse("nickyr.beast@gmail.com"));
+                email.Subject = "Test Email Subject";
+                email.Body = new TextPart(TextFormat.Plain) { Text = "Example Plain Text Message Body" };
+
+                // send email
+                using var smtp = new SmtpClient();
+                smtp.Connect("smtp.mail.yahoo.com", 465, SecureSocketOptions.SslOnConnect);
+                smtp.Authenticate("sportshub.service@yahoo.com", "V!jfeGbJBARVJ5$");
+
+                await smtp.SendAsync(email);
+
+                smtp.Disconnect(true);
+
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpPost(nameof(SendTestEmailGoogle))]
+        public async Task<IActionResult> SendTestEmailGoogle()
+        {
+            try
+            {
+                var email = new MimeMessage();
+                email.From.Add(MailboxAddress.Parse("sporthub.mailservice@gmail.com"));
+                email.To.Add(MailboxAddress.Parse("nickyr.beast@gmail.com"));
+                email.Subject = "Test Email Subject";
+                email.Body = new TextPart(TextFormat.Plain) { Text = "Example Plain Text Message Body" };
+
+                // send email
+                using var smtp = new SmtpClient();
+                smtp.Connect("smtp.gmail.com", 465, SecureSocketOptions.SslOnConnect);
+                smtp.Authenticate("sporthub.mailservice@gmail.com", "jzwitngbskeqrkjd");
+
+                await smtp.SendAsync(email);
+
+                smtp.Disconnect(true);
+
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
         }
     }
 }
